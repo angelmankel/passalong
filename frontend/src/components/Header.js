@@ -127,10 +127,12 @@ function Header({ onRefresh }) {
         <AppShell.Header px="md" py="xs">
           <Stack spacing="xs" style={{ height: '100%' }}>
             {/* Top row: Title and action icons */}
-            <Group position="apart">
-              <Text size="lg" weight={600}>
-                🏠 Yard Sale
-              </Text>
+              <Group position="apart">
+                <img 
+                  src="/package.png" 
+                  alt="PassAlong" 
+                  style={{ height: '32px', width: 'auto' }}
+                />
               
               <Group spacing="xs">
                 <ActionIcon
@@ -166,7 +168,7 @@ function Header({ onRefresh }) {
               placeholder="Search items..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              leftIcon={<IconSearch size={14} />}
+              leftSection={<IconSearch size={14} />}
               size="xs"
               style={{ width: '100%' }}
             />
@@ -188,17 +190,19 @@ function Header({ onRefresh }) {
 
   return (
     <AppShell.Header px="md">
-      <Group position="apart" h="100%">
-        <Text size="xl" weight={700}>
-          🏠 Yard Sale
-        </Text>
+        <Group position="apart" h="100%">
+          <img 
+            src="/package.png" 
+            alt="PassAlong" 
+            style={{ height: '40px', width: 'auto' }}
+          />
         
         <Group spacing="md" style={{ flex: 1, maxWidth: '100%' }}>
           <TextInput
             placeholder="Search items..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            leftIcon={<IconSearch size={16} />}
+            leftSection={<IconSearch size={16} />}
             style={{ flex: 1 }}
             size="sm"
           />

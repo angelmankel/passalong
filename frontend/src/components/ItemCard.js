@@ -371,7 +371,7 @@ function ItemCard({ item }) {
 
   return (
     <Card shadow="sm" padding="md" radius="md" withBorder style={{ cursor: 'pointer' }} onClick={openModal}>
-      <Group align="flex-start" spacing="md" noWrap>
+      <Group align="flex-start" spacing="md" wrap="nowrap">
         {/* Left side - Image */}
         <div style={{ flexShrink: 0, width: isMobile ? 120 : 240, height: isMobile ? 120 : 240 }}>
           {firstImage ? (
