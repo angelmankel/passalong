@@ -1,11 +1,13 @@
 import React from 'react';
-import { SimpleGrid, Text, Center } from '@mantine/core';
+import { SimpleGrid, Text, Center, useMantineTheme } from '@mantine/core';
+import { useMediaQuery } from '@mantine/hooks';
 import useStore from '../store/useStore';
 import ItemCard from './ItemCard';
 
 function ItemList() {
   const { getFilteredItems } = useStore();
   const filteredItems = getFilteredItems();
+  const isMobile = useMediaQuery('(max-width: 968px)');
 
   if (filteredItems.length === 0) {
     return (
@@ -19,14 +21,8 @@ function ItemList() {
 
   return (
     <SimpleGrid
-      cols={1}
-      spacing="md"
-      breakpoints={[
-        { maxWidth: 'sm', cols: 1, spacing: 'sm' },
-        { minWidth: 'sm', cols: 2, spacing: 'md' },
-        { minWidth: 'md', cols: 3, spacing: 'md' },
-        { minWidth: 'lg', cols: 4, spacing: 'lg' }
-      ]}
+      cols={isMobile ? 1 : 2}
+      spacing={isMobile ? 'md' : 'lg'}
     >
       {filteredItems.map((item) => (
         <ItemCard key={item.id} item={item} />

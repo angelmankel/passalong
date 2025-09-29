@@ -78,7 +78,7 @@ function ItemCard({ item }) {
           </Text>
 
           <Group position="apart" mb="sm">
-            <Text size="lg" weight={700} color="blue">
+            <Text size="xl" weight={900} color="blue" style={{ fontFamily: 'monospace' }}>
               ${item.price}
             </Text>
             <Badge color="green" variant="light" size="sm">
