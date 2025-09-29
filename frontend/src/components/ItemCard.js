@@ -598,24 +598,24 @@ function ItemModalContent({ item, modals }) {
               href={item.link}
               target="_blank"
               rel="noopener noreferrer"
-              leftIcon={<IconExternalLink size={16} />}
+              leftSection={<IconExternalLink size={16} />}
               variant="outline"
             >
               View Link
             </Button>
           )}
           <Button
-            leftIcon={isFavorite(item.id) ? <IconHeartFilled size={16} /> : <IconHeart size={16} />}
+            leftSection={isFavorite(item.id) ? <IconHeartFilled size={16} /> : <IconHeart size={16} />}
             color={isFavorite(item.id) ? 'red' : 'gray'}
             variant={isFavorite(item.id) ? 'filled' : 'outline'}
             onClick={handleToggleFavorite}
           >
-            {isFavorite(item.id) ? <IconHeartFilled size={16} /> : <IconHeart size={16} />}
+            {isFavorite(item.id) ? 'Remove from Favorites' : 'Add to Favorites'}
           </Button>
         </Group>
       </Group>
 
-      <Text size="lg" color="blue" weight={600} mb="md">
+      <Text weight={900} color="blue" style={{ fontFamily: 'monospace', textShadow: '0 1px 2px rgba(0,0,0,0.1)', fontSize: '28px', lineHeight: '1.2' }} mb="md">
         ${item.price}
       </Text>
 
