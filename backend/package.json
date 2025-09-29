@@ -1,7 +1,7 @@
 {
-  "name": "yardsale-backend",
+  "name": "passalong-backend",
   "version": "1.0.0",
-  "description": "Backend API for yard sale app",
+  "description": "Backend API for PassAlong app",
   "main": "src/main.js",
   "scripts": {
     "start": "node src/main.js",

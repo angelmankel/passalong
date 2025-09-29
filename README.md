@@ -1,6 +1,6 @@
-# Yard Sale App
+# PassAlong App
 
-A simple React frontend and Node.js backend for managing and displaying items for sale.
+A simple React frontend and Node.js backend for managing and displaying items to pass along.
 
 ## Features
 
