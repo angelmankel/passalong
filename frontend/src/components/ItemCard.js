@@ -10,6 +10,7 @@ import { getImageUrl } from '../constants';
 // Fullscreen Image Modal Component
 function FullscreenImageModal({ item, startIndex }) {
   const [currentImageIndex, setCurrentImageIndex] = useState(startIndex);
+  const modals = useModals();
   
   const goToPrevious = () => {
     if (currentImageIndex > 0) {
@@ -23,31 +24,68 @@ function FullscreenImageModal({ item, startIndex }) {
     }
   };
   
+  const closeModal = () => {
+    modals.closeAll();
+  };
+  
   const currentImageUrl = getImageUrl(item.id, item.images[currentImageIndex]);
   
   return (
-    <div style={{ 
-      height: '100vh', 
-      width: '100vw',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      margin: 0,
-      padding: 0
-    }}>
-      <ZoomableImage
-        src={currentImageUrl}
-        alt={`${item.name} - Image ${currentImageIndex + 1}`}
-        style={{ 
-          maxWidth: '100vw', 
-          maxHeight: '100vh', 
-          objectFit: 'contain' 
+    <div 
+      style={{ 
+        height: '100vh', 
+        width: '100vw',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        margin: 0,
+        padding: 0,
+        position: 'relative',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)'
+      }}
+      onClick={closeModal}
+    >
+      {/* Close Button */}
+      <button
+        onClick={closeModal}
+        style={{
+          position: 'absolute',
+          top: '20px',
+          right: '20px',
+          zIndex: 1000,
+          background: 'rgba(0,0,0,0.7)',
+          color: 'white',
+          border: 'none',
+          borderRadius: '50%',
+          width: '40px',
+          height: '40px',
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '20px'
         }}
-        onPrevious={goToPrevious}
-        onNext={goToNext}
-        hasPrevious={currentImageIndex > 0}
-        hasNext={currentImageIndex < item.images.length - 1}
-      />
+      >
+        ×
+      </button>
+      
+      <div onClick={(e) => e.stopPropagation()}>
+        <ZoomableImage
+          src={currentImageUrl}
+          alt={`${item.name} - Image ${currentImageIndex + 1}`}
+          style={{ 
+            maxWidth: '100vw', 
+            maxHeight: '100vh', 
+            width: 'auto',
+            height: 'auto',
+            objectFit: 'contain' 
+          }}
+          onPrevious={goToPrevious}
+          onNext={goToNext}
+          hasPrevious={currentImageIndex > 0}
+          hasNext={currentImageIndex < item.images.length - 1}
+        />
+      </div>
     </div>
   );
 }
@@ -140,8 +178,8 @@ function ZoomableImage({ src, alt, style, onPrevious, onNext, hasPrevious, hasNe
   return (
     <div
       style={{
-        width: '100%',
-        height: '100%',
+        width: '100vw',
+        height: '100vh',
         overflow: 'hidden',
         position: 'relative',
         cursor: scale > 1 ? (isDragging ? 'grabbing' : 'grab') : 'zoom-in',
@@ -234,7 +272,8 @@ function ZoomableImage({ src, alt, style, onPrevious, onNext, hasPrevious, hasNe
           style={{
             position: 'absolute',
             top: '10px',
-            right: '10px',
+            left: '50%',
+            transform: 'translateX(-50%)',
             background: 'rgba(0,0,0,0.7)',
             color: 'white',
             border: 'none',
@@ -429,10 +468,11 @@ function ItemModalContent({ item, modals }) {
                     radius="md"
                     style={{ cursor: 'pointer' }}
                     onClick={() => modals.openModal({
-                      title: `${item.name} - Image ${index + 1}`,
+                      title: '',
                       children: <FullscreenImageModal item={item} startIndex={index} />,
                       size: '100%',
                       centered: true,
+                      withCloseButton: false,
                       styles: {
                         content: { 
                           height: '100vh', 
@@ -440,22 +480,23 @@ function ItemModalContent({ item, modals }) {
                           width: '100vw',
                           maxWidth: '100vw',
                           margin: 0,
-                          padding: 0
+                          padding: 0,
+                          overflow: 'hidden',
+                          position: 'fixed',
+                          top: 0,
+                          left: 0,
+                          right: 0,
+                          bottom: 0
                         },
                         body: { 
                           height: '100vh', 
                           width: '100vw',
                           margin: 0,
-                          padding: 0
+                          padding: 0,
+                          overflow: 'hidden'
                         },
                         header: {
-                          position: 'absolute',
-                          top: 0,
-                          left: 0,
-                          right: 0,
-                          zIndex: 20,
-                          background: 'rgba(0,0,0,0.8)',
-                          color: 'white'
+                          display: 'none'
                         }
                       }
                     })}
