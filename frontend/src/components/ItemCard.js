@@ -634,7 +634,7 @@ function ItemModalContent({ item, modals }) {
         </Badge>
       </Group>
 
-      <Group mb="md" spacing="xs">
+      <Group mb="md" gap="xs">
         <Text size="sm" weight={500} color="dimmed">
           Categories:
         </Text>

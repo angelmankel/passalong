@@ -12,6 +12,8 @@ import {
   Switch,
   Divider,
   Tooltip,
+  Modal,
+  Checkbox,
 } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
@@ -22,6 +24,8 @@ import { CATEGORIES, CONDITIONS } from '../constants';
 function Header({ onRefresh }) {
   const isMobile = useMediaQuery('(max-width: 968px)');
   const [drawerOpened, setDrawerOpened] = useState(false);
+  const [confirmClearOpened, setConfirmClearOpened] = useState(false);
+  const [neverAskAgain, setNeverAskAgain] = useState(false);
   
   const {
     searchQuery,
@@ -49,6 +53,17 @@ function Header({ onRefresh }) {
       return;
     }
     
+    // Check if user has set "never ask again" preference
+    const skipConfirmation = localStorage.getItem('skipClearFavoritesConfirmation') === 'true';
+    
+    if (skipConfirmation) {
+      performClearFavorites();
+    } else {
+      setConfirmClearOpened(true);
+    }
+  };
+
+  const performClearFavorites = () => {
     clearFavorites();
     notifications.show({
       title: 'Favorites cleared',
@@ -56,6 +71,14 @@ function Header({ onRefresh }) {
       color: 'blue',
       autoClose: 2000,
     });
+    setConfirmClearOpened(false);
+  };
+
+  const handleConfirmClear = () => {
+    if (neverAskAgain) {
+      localStorage.setItem('skipClearFavoritesConfirmation', 'true');
+    }
+    performClearFavorites();
   };
 
   const handleExportFavorites = () => {
@@ -342,6 +365,42 @@ function Header({ onRefresh }) {
           </Tooltip>
         </Group>
       </Group>
+      
+      {/* Confirmation Modal */}
+      <Modal
+        opened={confirmClearOpened}
+        onClose={() => setConfirmClearOpened(false)}
+        title="Clear All Favorites"
+        centered
+      >
+        <Stack spacing="md">
+          <Text>
+            Are you sure you want to clear all {favorites.length} favorite{favorites.length !== 1 ? 's' : ''}? 
+            This action cannot be undone.
+          </Text>
+          
+          <Checkbox
+            label="Don't ask me again"
+            checked={neverAskAgain}
+            onChange={(e) => setNeverAskAgain(e.currentTarget.checked)}
+          />
+          
+          <Group position="right" spacing="sm">
+            <Button
+              variant="outline"
+              onClick={() => setConfirmClearOpened(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              color="red"
+              onClick={handleConfirmClear}
+            >
+              Clear All Favorites
+            </Button>
+          </Group>
+        </Stack>
+      </Modal>
     </AppShell.Header>
   );
 }
