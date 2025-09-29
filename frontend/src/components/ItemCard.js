@@ -68,10 +68,15 @@ function FullscreenImageModal({ item, startIndex }) {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          fontSize: '20px'
+          fontSize: '20px',
+          lineHeight: '40px',
+          fontWeight: 'normal',
+          padding: '0',
+          margin: '0',
+          textAlign: 'center'
         }}
       >
-        ×
+        ✕
       </button>
       
       <div style={{ position: 'relative' }}>
@@ -190,7 +195,7 @@ function ZoomableImage({ src, alt, style, onPrevious, onNext, hasPrevious, hasNe
         cursor: scale > 1 ? (isDragging ? 'grabbing' : 'grab') : 'default',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
       }}
       onWheel={handleWheel}
       onMouseDown={handleMouseDown}
@@ -225,7 +230,7 @@ function ZoomableImage({ src, alt, style, onPrevious, onNext, hasPrevious, hasNe
           onClick={onPrevious}
           style={{
             position: 'absolute',
-            left: '10px',
+            left: '20px',
             top: '50%',
             transform: 'translateY(-50%)',
             background: 'rgba(0,0,0,0.7)',
@@ -235,14 +240,19 @@ function ZoomableImage({ src, alt, style, onPrevious, onNext, hasPrevious, hasNe
             width: '50px',
             height: '50px',
             cursor: 'pointer',
-            fontSize: '20px',
+            fontSize: '18px',
+            fontWeight: 'bold',
+            padding: '0',
+            margin: '0',
+            lineHeight: '1',
+            textAlign: 'center',
             zIndex: 10,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center'
           }}
         >
-          ←
+          ◀
         </button>
       )}
       
@@ -251,7 +261,7 @@ function ZoomableImage({ src, alt, style, onPrevious, onNext, hasPrevious, hasNe
           onClick={onNext}
           style={{
             position: 'absolute',
-            right: '10px',
+            right: '20px',
             top: '50%',
             transform: 'translateY(-50%)',
             background: 'rgba(0,0,0,0.7)',
@@ -261,14 +271,19 @@ function ZoomableImage({ src, alt, style, onPrevious, onNext, hasPrevious, hasNe
             width: '50px',
             height: '50px',
             cursor: 'pointer',
-            fontSize: '20px',
+            fontSize: '18px',
+            fontWeight: 'bold',
+            padding: '0',
+            margin: '0',
+            lineHeight: '1',
+            textAlign: 'center',
             zIndex: 10,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center'
           }}
         >
-          →
+          ▶
         </button>
       )}
 
