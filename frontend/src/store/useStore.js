@@ -20,7 +20,6 @@ const useStore = create((set, get) => ({
   searchQuery: '',
   selectedCategory: '',
   selectedCondition: '',
-  priceRange: [0, 1000],
   showFavoritesOnly: false,
   
   // Actions
@@ -65,7 +64,6 @@ const useStore = create((set, get) => ({
   setSearchQuery: (query) => set({ searchQuery: query }),
   setSelectedCategory: (category) => set({ selectedCategory: category }),
   setSelectedCondition: (condition) => set({ selectedCondition: condition }),
-  setPriceRange: (range) => set({ priceRange: range }),
   setShowFavoritesOnly: (show) => set({ showFavoritesOnly: show }),
   
   // Clear all filters
@@ -73,13 +71,12 @@ const useStore = create((set, get) => ({
     searchQuery: '',
     selectedCategory: '',
     selectedCondition: '',
-    priceRange: [0, 1000],
     showFavoritesOnly: false
   }),
   
   // Get filtered items
   getFilteredItems: () => {
-    const { items, searchQuery, selectedCategory, selectedCondition, priceRange, showFavoritesOnly, favorites } = get();
+    const { items, searchQuery, selectedCategory, selectedCondition, showFavoritesOnly, favorites } = get();
     
     return items.filter(item => {
       // Search filter
@@ -99,11 +96,6 @@ const useStore = create((set, get) => ({
       
       // Condition filter
       if (selectedCondition && item.condition !== selectedCondition) {
-        return false;
-      }
-      
-      // Price filter
-      if (item.price < priceRange[0] || item.price > priceRange[1]) {
         return false;
       }
       

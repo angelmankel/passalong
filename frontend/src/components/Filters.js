@@ -3,10 +3,8 @@ import {
   Paper,
   TextInput,
   Select,
-  Slider,
   Switch,
   Group,
-  Stack,
   Text,
   Button,
   Grid
@@ -20,12 +18,10 @@ function Filters() {
     searchQuery,
     selectedCategory,
     selectedCondition,
-    priceRange,
     showFavoritesOnly,
     setSearchQuery,
     setSelectedCategory,
     setSelectedCondition,
-    setPriceRange,
     setShowFavoritesOnly,
     clearFilters
   } = useStore();
@@ -76,28 +72,6 @@ function Filters() {
             ]}
             clearable
           />
-        </Grid.Col>
-
-        <Grid.Col span={12} md={4}>
-          <Stack spacing="xs">
-            <Text size="sm" weight={500}>
-              Price Range: ${priceRange[0]} - ${priceRange[1]}
-            </Text>
-            <Slider
-              value={priceRange}
-              onChange={setPriceRange}
-              min={0}
-              max={1000}
-              step={10}
-              marks={[
-                { value: 0, label: '$0' },
-                { value: 250, label: '$250' },
-                { value: 500, label: '$500' },
-                { value: 750, label: '$750' },
-                { value: 1000, label: '$1000' }
-              ]}
-            />
-          </Stack>
         </Grid.Col>
       </Grid>
 
