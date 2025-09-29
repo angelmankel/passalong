@@ -15,7 +15,7 @@ import {
 } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
-import { IconSearch, IconFilter, IconRefresh, IconHeart } from '@tabler/icons-react';
+import { IconSearch, IconFilter, IconRefresh, IconHeart, IconTrash } from '@tabler/icons-react';
 import useStore from '../store/useStore';
 import { CATEGORIES, CONDITIONS } from '../constants';
 
@@ -34,8 +34,29 @@ function Header({ onRefresh }) {
     setSelectedCondition,
     setShowFavoritesOnly,
     clearFilters,
-    getFilteredItems
+    getFilteredItems,
+    clearFavorites
   } = useStore();
+
+  const handleClearFavorites = () => {
+    if (favorites.length === 0) {
+      notifications.show({
+        title: 'No favorites',
+        message: 'No favorites to clear',
+        color: 'orange',
+        autoClose: 2000,
+      });
+      return;
+    }
+    
+    clearFavorites();
+    notifications.show({
+      title: 'Favorites cleared',
+      message: 'All favorites have been removed',
+      color: 'blue',
+      autoClose: 2000,
+    });
+  };
 
   const handleExportFavorites = () => {
     const filteredItems = getFilteredItems();
@@ -145,6 +166,16 @@ function Header({ onRefresh }) {
                 />
               
               <Group spacing="xs">
+                <Tooltip label="Refresh data">
+                  <ActionIcon
+                    variant="subtle"
+                    onClick={onRefresh}
+                    size="lg"
+                  >
+                    <IconRefresh size={18} />
+                  </ActionIcon>
+                </Tooltip>
+                
                 <Tooltip label="Copy favorites to clipboard">
                   <ActionIcon
                     variant="subtle"
@@ -164,17 +195,23 @@ function Header({ onRefresh }) {
                 >
                   <IconFilter size={18} />
                 </ActionIcon>
-                
-                <Tooltip label="Refresh data">
-                  <ActionIcon
-                    variant="subtle"
-                    onClick={onRefresh}
-                    size="lg"
-                  >
-                    <IconRefresh size={18} />
-                  </ActionIcon>
-                </Tooltip>
               </Group>
+              
+              <Tooltip label="Clear all favorites">
+                <ActionIcon
+                  variant="subtle"
+                  color={favorites.length > 0 ? 'red' : 'gray'}
+                  onClick={handleClearFavorites}
+                  disabled={favorites.length === 0}
+                  size="lg"
+                  style={{ 
+                    marginLeft: '16px',
+                    color: favorites.length > 0 ? '#d32f2f' : undefined
+                  }}
+                >
+                  <IconTrash size={18} />
+                </ActionIcon>
+              </Tooltip>
             </Group>
             
             {/* Bottom row: Search input */}
@@ -205,11 +242,23 @@ function Header({ onRefresh }) {
   return (
     <AppShell.Header px="md">
         <Group position="apart" h="100%">
-          <img 
-            src="/package.png" 
-            alt="PassAlong" 
-            style={{ height: '40px', width: 'auto' }}
-          />
+          <Group spacing="md">
+            <img 
+              src="/package.png" 
+              alt="PassAlong" 
+              style={{ height: '40px', width: 'auto' }}
+            />
+            
+            <Tooltip label="Refresh data">
+              <ActionIcon
+                variant="subtle"
+                onClick={onRefresh}
+                size="lg"
+              >
+                <IconRefresh size={18} />
+              </ActionIcon>
+            </Tooltip>
+          </Group>
         
         <Group spacing="md" style={{ flex: 1, maxWidth: '100%' }}>
           <TextInput
@@ -276,13 +325,19 @@ function Header({ onRefresh }) {
             </ActionIcon>
           </Tooltip>
           
-          <Tooltip label="Refresh data">
+          <Tooltip label="Clear all favorites">
             <ActionIcon
               variant="subtle"
-              onClick={onRefresh}
+              color={favorites.length > 0 ? 'red' : 'gray'}
+              onClick={handleClearFavorites}
+              disabled={favorites.length === 0}
               size="lg"
+              style={{ 
+                marginLeft: '16px',
+                color: favorites.length > 0 ? '#d32f2f' : undefined
+              }}
             >
-              <IconRefresh size={18} />
+              <IconTrash size={18} />
             </ActionIcon>
           </Tooltip>
         </Group>

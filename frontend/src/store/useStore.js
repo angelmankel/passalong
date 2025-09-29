@@ -60,6 +60,15 @@ const useStore = create((set, get) => ({
     return get().favorites.includes(itemId);
   },
   
+  clearFavorites: async () => {
+    try {
+      await localforage.setItem('favorites', []);
+      set({ favorites: [] });
+    } catch (error) {
+      console.error('Error clearing favorites:', error);
+    }
+  },
+  
   // Filter actions
   setSearchQuery: (query) => set({ searchQuery: query }),
   setSelectedCategory: (category) => set({ selectedCategory: category }),
