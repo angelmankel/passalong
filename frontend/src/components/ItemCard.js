@@ -60,9 +60,14 @@ function ItemCard({ item }) {
         {/* Right side - Item information */}
         <div style={{ flex: 1, minWidth: 0 }}>
           <Group position="apart" mb="xs">
-            <Text weight={500} lineClamp={1} style={{ flex: 1 }}>
-              {item.name}
-            </Text>
+            <Group spacing="xs" style={{ flex: 1 }}>
+              <Text weight={500} lineClamp={1}>
+                {item.name}
+              </Text>
+              <Badge color="green" variant="light" size="sm">
+                {item.condition}
+              </Badge>
+            </Group>
             <ActionIcon
               variant="subtle"
               color={isFavorite(item.id) ? 'red' : 'gray'}
@@ -73,26 +78,22 @@ function ItemCard({ item }) {
             </ActionIcon>
           </Group>
 
-          <Text size="sm" color="dimmed" lineClamp={2} mb="sm">
-            {item.description}
-          </Text>
-
-          <Group position="apart" mb="sm">
-            <Text size="xl" weight={900} color="blue" style={{ fontFamily: 'monospace' }}>
-              ${item.price}
-            </Text>
-            <Badge color="green" variant="light" size="sm">
-              {item.condition}
-            </Badge>
-          </Group>
-
-          <Group spacing="xs">
+          <div style={{ display: 'flex', gap: '4px', marginBottom: '12px' }}>
             {item.category.map((cat) => (
               <Badge key={cat} size="xs" variant="outline">
                 {cat}
               </Badge>
             ))}
-          </Group>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+            <Text weight={900} color="blue" style={{ fontFamily: 'monospace', flexShrink: 0, textShadow: '0 1px 2px rgba(0,0,0,0.1)', fontSize: '28px', lineHeight: '1.2' }}>
+              ${item.price}
+            </Text>
+            <Text size="sm" color="dimmed" lineClamp={2} style={{ flex: 1 }}>
+              {item.description}
+            </Text>
+          </div>
         </div>
       </Group>
     </Card>
