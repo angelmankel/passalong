@@ -1,10 +1,256 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Card, Image, Text, Group, Badge, Button, ActionIcon } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
-import { IconHeart, IconHeartFilled, IconEye, IconExternalLink } from '@tabler/icons-react';
+import { Carousel } from '@mantine/carousel';
+import { IconHeart, IconHeartFilled, IconEye, IconExternalLink, IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 import { useModals } from '@mantine/modals';
 import useStore from '../store/useStore';
 import { getImageUrl } from '../constants';
+
+// Fullscreen Image Modal Component
+function FullscreenImageModal({ item, startIndex }) {
+  const [currentImageIndex, setCurrentImageIndex] = useState(startIndex);
+  
+  const goToPrevious = () => {
+    if (currentImageIndex > 0) {
+      setCurrentImageIndex(currentImageIndex - 1);
+    }
+  };
+  
+  const goToNext = () => {
+    if (currentImageIndex < item.images.length - 1) {
+      setCurrentImageIndex(currentImageIndex + 1);
+    }
+  };
+  
+  const currentImageUrl = getImageUrl(item.id, item.images[currentImageIndex]);
+  
+  return (
+    <div style={{ 
+      height: '100vh', 
+      width: '100vw',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      margin: 0,
+      padding: 0
+    }}>
+      <ZoomableImage
+        src={currentImageUrl}
+        alt={`${item.name} - Image ${currentImageIndex + 1}`}
+        style={{ 
+          maxWidth: '100vw', 
+          maxHeight: '100vh', 
+          objectFit: 'contain' 
+        }}
+        onPrevious={goToPrevious}
+        onNext={goToNext}
+        hasPrevious={currentImageIndex > 0}
+        hasNext={currentImageIndex < item.images.length - 1}
+      />
+    </div>
+  );
+}
+
+// Zoomable Image Component
+function ZoomableImage({ src, alt, style, onPrevious, onNext, hasPrevious, hasNext }) {
+  const [scale, setScale] = useState(1);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const imageRef = useRef(null);
+
+  const handleWheel = (e) => {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? 0.9 : 1.1;
+    setScale(prev => Math.max(0.5, Math.min(3, prev * delta)));
+  };
+
+  const handleMouseDown = (e) => {
+    e.preventDefault();
+    if (scale > 1) {
+      setIsDragging(true);
+      setDragStart({ x: e.clientX - position.x, y: e.clientY - position.y });
+    }
+  };
+
+  const handleMouseMove = (e) => {
+    e.preventDefault();
+    if (isDragging && scale > 1) {
+      setPosition({
+        x: e.clientX - dragStart.x,
+        y: e.clientY - dragStart.y
+      });
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  // Touch events for mobile
+  const handleTouchStart = (e) => {
+    e.preventDefault();
+    if (scale > 1 && e.touches.length === 1) {
+      setIsDragging(true);
+      setDragStart({ x: e.touches[0].clientX - position.x, y: e.touches[0].clientY - position.y });
+    }
+  };
+
+  const handleTouchMove = (e) => {
+    e.preventDefault();
+    if (isDragging && scale > 1 && e.touches.length === 1) {
+      setPosition({
+        x: e.touches[0].clientX - dragStart.x,
+        y: e.touches[0].clientY - dragStart.y
+      });
+    }
+  };
+
+  const handleTouchEnd = () => {
+    setIsDragging(false);
+  };
+
+  const resetZoom = () => {
+    setScale(1);
+    setPosition({ x: 0, y: 0 });
+  };
+
+  // Auto-reset when zoom goes below 1:1
+  useEffect(() => {
+    if (scale < 1) {
+      resetZoom();
+    }
+  }, [scale]);
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'ArrowLeft' && hasPrevious) {
+        onPrevious();
+      } else if (e.key === 'ArrowRight' && hasNext) {
+        onNext();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [onPrevious, onNext, hasPrevious, hasNext]);
+
+  return (
+    <div
+      style={{
+        width: '100%',
+        height: '100%',
+        overflow: 'hidden',
+        position: 'relative',
+        cursor: scale > 1 ? (isDragging ? 'grabbing' : 'grab') : 'zoom-in',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}
+      onWheel={handleWheel}
+      onMouseDown={handleMouseDown}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+      onMouseLeave={handleMouseUp}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
+      <img
+        ref={imageRef}
+        src={src}
+        alt={alt}
+        style={{
+          ...style,
+          transform: `scale(${scale}) translate(${position.x / scale}px, ${position.y / scale}px)`,
+          transformOrigin: 'center center',
+          transition: isDragging ? 'none' : 'transform 0.1s ease-out',
+          userSelect: 'none',
+          pointerEvents: 'none',
+          maxWidth: '100%',
+          maxHeight: '100%',
+          objectFit: 'contain'
+        }}
+        draggable={false}
+      />
+      {/* Navigation buttons */}
+      {hasPrevious && (
+        <button
+          onClick={onPrevious}
+          style={{
+            position: 'absolute',
+            left: '10px',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            background: 'rgba(0,0,0,0.7)',
+            color: 'white',
+            border: 'none',
+            borderRadius: '50%',
+            width: '50px',
+            height: '50px',
+            cursor: 'pointer',
+            fontSize: '20px',
+            zIndex: 10,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+        >
+          ←
+        </button>
+      )}
+      
+      {hasNext && (
+        <button
+          onClick={onNext}
+          style={{
+            position: 'absolute',
+            right: '10px',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            background: 'rgba(0,0,0,0.7)',
+            color: 'white',
+            border: 'none',
+            borderRadius: '50%',
+            width: '50px',
+            height: '50px',
+            cursor: 'pointer',
+            fontSize: '20px',
+            zIndex: 10,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+        >
+          →
+        </button>
+      )}
+
+      {scale > 1 && (
+        <button
+          onClick={resetZoom}
+          style={{
+            position: 'absolute',
+            top: '10px',
+            right: '10px',
+            background: 'rgba(0,0,0,0.7)',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            padding: '8px 12px',
+            cursor: 'pointer',
+            fontSize: '14px',
+            zIndex: 10
+          }}
+        >
+          Reset Zoom
+        </button>
+      )}
+    </div>
+  );
+}
 
 function ItemCard({ item }) {
   const { toggleFavorite, isFavorite } = useStore();
@@ -14,7 +260,7 @@ function ItemCard({ item }) {
   const openModal = () => {
     modals.openModal({
       title: item.name,
-      children: <ItemModalContent item={item} />,
+      children: <ItemModalContent item={item} modals={modals} />,
       size: 'xl',
       centered: true
     });
@@ -103,7 +349,7 @@ function ItemCard({ item }) {
 }
 
 // Modal content component
-function ItemModalContent({ item }) {
+function ItemModalContent({ item, modals }) {
   const { toggleFavorite, isFavorite } = useStore();
 
   const handleToggleFavorite = () => {
@@ -164,21 +410,60 @@ function ItemModalContent({ item }) {
           <Text weight={500} mb="sm">
             Images ({item.images.length})
           </Text>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '10px' }}>
+          <Carousel
+            withIndicators
+            height={300}
+            slideSize={{ base: '100%', sm: '50%', md: '33.333333%' }}
+            slideGap={{ base: 0, sm: 'md' }}
+            emblaOptions={{ loop: true, align: 'start' }}
+          >
             {item.images.map((image, index) => {
               const imageUrl = getImageUrl(item.id, image);
               return (
-                <Image
-                  key={index}
-                  src={imageUrl}
-                  alt={`${item.name} - Image ${index + 1}`}
-                  radius="md"
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => window.open(imageUrl, '_blank')}
-                />
+                <Carousel.Slide key={index}>
+                  <Image
+                    src={imageUrl}
+                    alt={`${item.name} - Image ${index + 1}`}
+                    height={300}
+                    fit="contain"
+                    radius="md"
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => modals.openModal({
+                      title: `${item.name} - Image ${index + 1}`,
+                      children: <FullscreenImageModal item={item} startIndex={index} />,
+                      size: '100%',
+                      centered: true,
+                      styles: {
+                        content: { 
+                          height: '100vh', 
+                          maxHeight: '100vh',
+                          width: '100vw',
+                          maxWidth: '100vw',
+                          margin: 0,
+                          padding: 0
+                        },
+                        body: { 
+                          height: '100vh', 
+                          width: '100vw',
+                          margin: 0,
+                          padding: 0
+                        },
+                        header: {
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          right: 0,
+                          zIndex: 20,
+                          background: 'rgba(0,0,0,0.8)',
+                          color: 'white'
+                        }
+                      }
+                    })}
+                  />
+                </Carousel.Slide>
               );
             })}
-          </div>
+          </Carousel>
         </div>
       )}
     </div>
