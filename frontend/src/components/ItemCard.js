@@ -623,10 +623,19 @@ function ItemModalContent({ item, modals }) {
         {item.description}
       </Text>
 
-      <Group mb="md">
+      <Group mb="md" spacing="xs">
+        <Text size="sm" weight={500} color="dimmed">
+          Condition:
+        </Text>
         <Badge size="lg" color="green">
           {item.condition}
         </Badge>
+      </Group>
+
+      <Group mb="md" spacing="xs">
+        <Text size="sm" weight={500} color="dimmed">
+          Categories:
+        </Text>
         {item.category.map((cat) => (
           <Badge key={cat} size="lg" variant="outline">
             {cat}
@@ -636,9 +645,6 @@ function ItemModalContent({ item, modals }) {
 
       {item.images && item.images.length > 0 && (
         <div>
-          <Text weight={500} mb="sm">
-            Images ({item.images.length})
-          </Text>
           <Carousel
             withIndicators
             height={300}
