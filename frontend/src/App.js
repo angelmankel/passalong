@@ -60,17 +60,15 @@ function App() {
       <Header onRefresh={refreshItems} />
       
       <AppShell.Main>
-        <Container size="xl">
-          {error && (
-            <div style={{ color: 'red', textAlign: 'center', margin: '20px 0' }}>
-              {error}
-            </div>
-          )}
-          
-          <LoadingOverlay visible={loading} />
-          <ItemList />
-          <ItemModal />
-        </Container>
+        {error && (
+          <div style={{ color: 'red', textAlign: 'center', margin: '20px 0' }}>
+            {error}
+          </div>
+        )}
+        
+        <LoadingOverlay visible={loading} />
+        <ItemList />
+        <ItemModal />
       </AppShell.Main>
     </AppShell>
   );

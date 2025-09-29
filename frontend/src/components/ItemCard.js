@@ -1,5 +1,6 @@
 import React from 'react';
 import { Card, Image, Text, Group, Badge, Button, ActionIcon } from '@mantine/core';
+import { useMediaQuery } from '@mantine/hooks';
 import { IconHeart, IconHeartFilled, IconEye } from '@tabler/icons-react';
 import { useModals } from '@mantine/modals';
 import useStore from '../store/useStore';
@@ -8,6 +9,7 @@ import { getImageUrl } from '../constants';
 function ItemCard({ item }) {
   const { toggleFavorite, isFavorite } = useStore();
   const modals = useModals();
+  const isMobile = useMediaQuery('(max-width: 968px)');
 
   const openModal = () => {
     modals.openModal({
@@ -31,28 +33,28 @@ function ItemCard({ item }) {
     <Card shadow="sm" padding="md" radius="md" withBorder style={{ cursor: 'pointer' }} onClick={openModal}>
       <Group align="flex-start" spacing="md" noWrap>
         {/* Left side - Image */}
-        <div style={{ flexShrink: 0, width: 120, height: 120 }}>
+        <div style={{ flexShrink: 0, width: isMobile ? 120 : 240, height: isMobile ? 120 : 240 }}>
           {firstImage ? (
             <Image
               src={firstImage}
-              width={120}
-              height={120}
+              width={isMobile ? 120 : 240}
+              height={isMobile ? 120 : 240}
               alt={item.name}
               fit="cover"
               radius="md"
-              fallbackSrc="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPk5vIEltYWdlPC90ZXh0Pjwvc3ZnPg=="
+              fallbackSrc={isMobile ? "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPk5vIEltYWdlPC90ZXh0Pjwvc3ZnPg==" : "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQwIiBoZWlnaHQ9IjI0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPk5vIEltYWdlPC90ZXh0Pjwvc3ZnPg=="}
             />
           ) : (
             <div style={{ 
-              width: 120, 
-              height: 120, 
+              width: isMobile ? 120 : 240, 
+              height: isMobile ? 120 : 240, 
               backgroundColor: '#f0f0f0', 
               display: 'flex', 
               alignItems: 'center', 
               justifyContent: 'center',
               borderRadius: '8px'
             }}>
-              <Text color="dimmed" size="sm">No Image</Text>
+              <Text color="dimmed" size={isMobile ? "sm" : "md"}>No Image</Text>
             </div>
           )}
         </div>
@@ -72,9 +74,9 @@ function ItemCard({ item }) {
               variant="subtle"
               color={isFavorite(item.id) ? 'red' : 'gray'}
               onClick={handleToggleFavorite}
-              size="sm"
+              size="lg"
             >
-              {isFavorite(item.id) ? <IconHeartFilled size={14} /> : <IconHeart size={14} />}
+              {isFavorite(item.id) ? <IconHeartFilled size={20} /> : <IconHeart size={20} />}
             </ActionIcon>
           </Group>
 
