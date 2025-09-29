@@ -171,6 +171,44 @@ function ZoomableImage({ src, alt, style, onPrevious, onNext, hasPrevious, hasNe
     }
   }, [scale]);
 
+  // Add passive: false to touch and wheel events
+  useEffect(() => {
+    const container = imageRef.current?.parentElement;
+    if (!container) return;
+
+    const handleTouchStartPassive = (e) => {
+      e.preventDefault();
+      handleTouchStart(e);
+    };
+
+    const handleTouchMovePassive = (e) => {
+      e.preventDefault();
+      handleTouchMove(e);
+    };
+
+    const handleTouchEndPassive = (e) => {
+      e.preventDefault();
+      handleTouchEnd(e);
+    };
+
+    const handleWheelPassive = (e) => {
+      e.preventDefault();
+      handleWheel(e);
+    };
+
+    container.addEventListener('touchstart', handleTouchStartPassive, { passive: false });
+    container.addEventListener('touchmove', handleTouchMovePassive, { passive: false });
+    container.addEventListener('touchend', handleTouchEndPassive, { passive: false });
+    container.addEventListener('wheel', handleWheelPassive, { passive: false });
+
+    return () => {
+      container.removeEventListener('touchstart', handleTouchStartPassive);
+      container.removeEventListener('touchmove', handleTouchMovePassive);
+      container.removeEventListener('touchend', handleTouchEndPassive);
+      container.removeEventListener('wheel', handleWheelPassive);
+    };
+  }, [scale, isDragging, position, dragStart]);
+
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -197,14 +235,10 @@ function ZoomableImage({ src, alt, style, onPrevious, onNext, hasPrevious, hasNe
         alignItems: 'center',
         justifyContent: 'center',
       }}
-      onWheel={handleWheel}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
       onClick={(e) => e.stopPropagation()}
     >
       <img
