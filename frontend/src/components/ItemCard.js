@@ -107,6 +107,8 @@ function ZoomableImage({ src, alt, style, onPrevious, onNext, hasPrevious, hasNe
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const imageRef = useRef(null);
+  const isMobile = window.innerWidth <= 968;
+  
 
   const handleWheel = (e) => {
     e.preventDefault();
@@ -258,68 +260,183 @@ function ZoomableImage({ src, alt, style, onPrevious, onNext, hasPrevious, hasNe
         }}
         draggable={false}
       />
-      {/* Navigation buttons */}
-      {hasPrevious && (
-        <button
-          onClick={onPrevious}
-          style={{
-            position: 'absolute',
-            left: '20px',
-            top: '50%',
-            transform: 'translateY(-50%)',
-            background: 'rgba(0,0,0,0.7)',
-            color: 'white',
-            border: 'none',
-            borderRadius: '50%',
-            width: '50px',
-            height: '50px',
-            cursor: 'pointer',
-            fontSize: '18px',
-            fontWeight: 'bold',
-            padding: '0',
-            margin: '0',
-            lineHeight: '1',
-            textAlign: 'center',
-            zIndex: 10,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}
-        >
-          ◀
-        </button>
-      )}
-      
-      {hasNext && (
-        <button
-          onClick={onNext}
-          style={{
-            position: 'absolute',
-            right: '20px',
-            top: '50%',
-            transform: 'translateY(-50%)',
-            background: 'rgba(0,0,0,0.7)',
-            color: 'white',
-            border: 'none',
-            borderRadius: '50%',
-            width: '50px',
-            height: '50px',
-            cursor: 'pointer',
-            fontSize: '18px',
-            fontWeight: 'bold',
-            padding: '0',
-            margin: '0',
-            lineHeight: '1',
-            textAlign: 'center',
-            zIndex: 10,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}
-        >
-          ▶
-        </button>
-      )}
+       {/* Desktop Navigation buttons - side buttons */}
+       {!isMobile && hasPrevious && (
+         <button
+           onClick={onPrevious}
+           style={{
+             position: 'absolute',
+             left: '20px',
+             top: '50%',
+             transform: 'translateY(-50%)',
+             background: 'rgba(0,0,0,0.5)',
+             color: 'white',
+             border: 'none',
+             borderRadius: '50%',
+             width: '50px',
+             height: '50px',
+             cursor: 'pointer',
+             fontSize: '18px',
+             fontWeight: 'bold',
+             padding: '0',
+             margin: '0',
+             lineHeight: '1',
+             textAlign: 'center',
+             zIndex: 10,
+             display: 'flex',
+             alignItems: 'center',
+             justifyContent: 'center',
+             transition: 'all 0.2s ease',
+             opacity: '0.5'
+           }}
+           onMouseEnter={(e) => {
+             e.target.style.opacity = '1.0';
+             e.target.style.background = 'rgba(0,0,0,0.7)';
+           }}
+           onMouseLeave={(e) => {
+             e.target.style.opacity = '0.5';
+             e.target.style.background = 'rgba(0,0,0,0.5)';
+           }}
+         >
+           ◀
+         </button>
+       )}
+       
+       {!isMobile && hasNext && (
+         <button
+           onClick={onNext}
+           style={{
+             position: 'absolute',
+             right: '20px',
+             top: '50%',
+             transform: 'translateY(-50%)',
+             background: 'rgba(0,0,0,0.5)',
+             color: 'white',
+             border: 'none',
+             borderRadius: '50%',
+             width: '50px',
+             height: '50px',
+             cursor: 'pointer',
+             fontSize: '18px',
+             fontWeight: 'bold',
+             padding: '0',
+             margin: '0',
+             lineHeight: '1',
+             textAlign: 'center',
+             zIndex: 10,
+             display: 'flex',
+             alignItems: 'center',
+             justifyContent: 'center',
+             transition: 'all 0.2s ease',
+             opacity: '0.5'
+           }}
+           onMouseEnter={(e) => {
+             e.target.style.opacity = '1.0';
+             e.target.style.background = 'rgba(0,0,0,0.7)';
+           }}
+           onMouseLeave={(e) => {
+             e.target.style.opacity = '0.5';
+             e.target.style.background = 'rgba(0,0,0,0.5)';
+           }}
+         >
+           ▶
+         </button>
+       )}
+
+       {/* Mobile Navigation buttons - bottom buttons */}
+       {isMobile && (hasPrevious || hasNext) && (
+         <div style={{
+           position: 'absolute',
+           bottom: '20px',
+           left: '50%',
+           transform: 'translateX(-50%)',
+           display: 'flex',
+           gap: '15px',
+           zIndex: 1000,
+           pointerEvents: 'auto'
+         }}>
+           {hasPrevious && (
+             <button
+               onClick={(e) => {
+                 e.preventDefault();
+                 e.stopPropagation();
+                 onPrevious();
+               }}
+               onTouchStart={(e) => {
+                 e.preventDefault();
+                 e.stopPropagation();
+               }}
+               onTouchEnd={(e) => {
+                 e.preventDefault();
+                 e.stopPropagation();
+                 onPrevious();
+               }}
+               style={{
+                 background: 'rgba(0,0,0,0.8)',
+                 color: 'white',
+                 border: 'none',
+                 borderRadius: '25px',
+                 padding: '12px 20px',
+                 cursor: 'pointer',
+                 fontSize: '16px',
+                 fontWeight: 'bold',
+                 display: 'flex',
+                 alignItems: 'center',
+                 justifyContent: 'center',
+                 gap: '5px',
+                 pointerEvents: 'auto',
+                 zIndex: 1001,
+                 position: 'relative',
+                 width: '140px',
+                 height: '50px',
+                 flexShrink: 0
+               }}
+             >
+               ◀ Previous
+             </button>
+           )}
+           {hasNext && (
+             <button
+               onClick={(e) => {
+                 e.preventDefault();
+                 e.stopPropagation();
+                 onNext();
+               }}
+               onTouchStart={(e) => {
+                 e.preventDefault();
+                 e.stopPropagation();
+               }}
+               onTouchEnd={(e) => {
+                 e.preventDefault();
+                 e.stopPropagation();
+                 onNext();
+               }}
+               style={{
+                 background: 'rgba(0,0,0,0.8)',
+                 color: 'white',
+                 border: 'none',
+                 borderRadius: '25px',
+                 padding: '12px 20px',
+                 cursor: 'pointer',
+                 fontSize: '16px',
+                 fontWeight: 'bold',
+                 display: 'flex',
+                 alignItems: 'center',
+                 justifyContent: 'center',
+                 gap: '5px',
+                 pointerEvents: 'auto',
+                 zIndex: 1001,
+                 position: 'relative',
+                 width: '140px',
+                 height: '50px',
+                 flexShrink: 0
+               }}
+             >
+               Next ▶
+             </button>
+           )}
+         </div>
+       )}
 
       {scale > 1 && (
         <button
@@ -329,14 +446,24 @@ function ZoomableImage({ src, alt, style, onPrevious, onNext, hasPrevious, hasNe
             top: '10px',
             left: '50%',
             transform: 'translateX(-50%)',
-            background: 'rgba(0,0,0,0.7)',
+            background: 'rgba(0,0,0,0.5)',
             color: 'white',
             border: 'none',
             borderRadius: '4px',
             padding: '8px 12px',
             cursor: 'pointer',
             fontSize: '14px',
-            zIndex: 10
+            zIndex: 10,
+            transition: 'all 0.2s ease',
+            opacity: '0.5'
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.opacity = '1.0';
+            e.target.style.background = 'rgba(0,0,0,0.7)';
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.opacity = '0.5';
+            e.target.style.background = 'rgba(0,0,0,0.5)';
           }}
         >
           Reset Zoom
