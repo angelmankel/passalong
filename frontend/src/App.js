@@ -54,7 +54,7 @@ function App() {
 
   return (
     <AppShell
-      header={{ height: { base: 60, sm: 80 } }}
+      header={{ height: { base: 100, sm: 80 } }}
       padding="md"
     >
       <Header onRefresh={refreshItems} />

@@ -20,7 +20,7 @@ import { CATEGORIES, CONDITIONS } from '../constants';
 
 function Header({ onRefresh }) {
   const theme = useMantineTheme();
-  const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
+  const isMobile = useMediaQuery('(max-width: 968px)');
   const [drawerOpened, setDrawerOpened] = useState(false);
   
   const {
@@ -68,16 +68,11 @@ function Header({ onRefresh }) {
 
   const FilterContent = () => (
     <Stack spacing="md">
-      <TextInput
-        placeholder="Search items..."
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        leftIcon={<IconSearch size={16} />}
-        size="sm"
-      />
-      
+      <Text size="sm" color="dimmed" weight={500}>
+        Filter by Category
+      </Text>
       <Select
-        placeholder="Category"
+        placeholder="All Categories"
         value={selectedCategory}
         onChange={setSelectedCategory}
         data={[
@@ -85,11 +80,14 @@ function Header({ onRefresh }) {
           ...CATEGORIES.map(cat => ({ value: cat, label: cat }))
         ]}
         clearable
-        size="sm"
+        size="md"
       />
       
+      <Text size="sm" color="dimmed" weight={500}>
+        Filter by Condition
+      </Text>
       <Select
-        placeholder="Condition"
+        placeholder="All Conditions"
         value={selectedCondition}
         onChange={setSelectedCondition}
         data={[
@@ -97,72 +95,88 @@ function Header({ onRefresh }) {
           ...CONDITIONS.map(cond => ({ value: cond, label: cond }))
         ]}
         clearable
-        size="sm"
+        size="md"
       />
+      
+      <Divider />
       
       <Switch
         label="Show favorites only"
         checked={showFavoritesOnly}
         onChange={(e) => setShowFavoritesOnly(e.currentTarget.checked)}
-        size="sm"
+        size="md"
       />
       
       <Divider />
       
       <Group position="apart">
-        <Button variant="outline" size="sm" onClick={clearFilters}>
-          Clear All
+        <Button variant="outline" size="md" onClick={clearFilters} fullWidth>
+          Clear All Filters
         </Button>
-        <Text size="sm" color="dimmed">
-          {favorites.length} favorite{favorites.length !== 1 ? 's' : ''}
-        </Text>
       </Group>
+      
+      <Text size="sm" color="dimmed" align="center">
+        {favorites.length} favorite{favorites.length !== 1 ? 's' : ''} saved
+      </Text>
     </Stack>
   );
 
   if (isMobile) {
     return (
       <>
-        <AppShell.Header px="md">
-          <Group position="apart" h="100%">
-            <Text size="lg" weight={600}>
-              🏠 Yard Sale
-            </Text>
-            
-            <Group spacing="xs">
-              <ActionIcon
-                variant="subtle"
-                color={favorites.length > 0 ? 'red' : 'gray'}
-                onClick={handleExportFavorites}
-                disabled={favorites.length === 0}
-                size="lg"
-              >
-                <IconHeart size={18} />
-              </ActionIcon>
+        <AppShell.Header px="md" py="xs">
+          <Stack spacing="xs" style={{ height: '100%' }}>
+            {/* Top row: Title and action icons */}
+            <Group position="apart">
+              <Text size="lg" weight={600}>
+                🏠 Yard Sale
+              </Text>
               
-              <ActionIcon
-                variant="subtle"
-                onClick={() => setDrawerOpened(true)}
-                size="lg"
-              >
-                <IconFilter size={18} />
-              </ActionIcon>
-              
-              <ActionIcon
-                variant="subtle"
-                onClick={onRefresh}
-                size="lg"
-              >
-                <IconRefresh size={18} />
-              </ActionIcon>
+              <Group spacing="xs">
+                <ActionIcon
+                  variant="subtle"
+                  color={favorites.length > 0 ? 'red' : 'gray'}
+                  onClick={handleExportFavorites}
+                  disabled={favorites.length === 0}
+                  size="lg"
+                >
+                  <IconHeart size={18} />
+                </ActionIcon>
+                
+                <ActionIcon
+                  variant="subtle"
+                  onClick={() => setDrawerOpened(true)}
+                  size="lg"
+                >
+                  <IconFilter size={18} />
+                </ActionIcon>
+                
+                <ActionIcon
+                  variant="subtle"
+                  onClick={onRefresh}
+                  size="lg"
+                >
+                  <IconRefresh size={18} />
+                </ActionIcon>
+              </Group>
             </Group>
-          </Group>
+            
+            {/* Bottom row: Search input */}
+            <TextInput
+              placeholder="Search items..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              leftIcon={<IconSearch size={14} />}
+              size="xs"
+              style={{ width: '100%' }}
+            />
+          </Stack>
         </AppShell.Header>
 
         <Drawer
           opened={drawerOpened}
           onClose={() => setDrawerOpened(false)}
-          title="Filters"
+          title="Filters & Options"
           padding="md"
           size="sm"
         >
