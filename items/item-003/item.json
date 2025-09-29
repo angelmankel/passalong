@@ -1,0 +1,9 @@
+{
+  "id": "item-003",
+  "name": "Kitchen Knife Set",
+  "description": "Professional 8-piece knife set with wooden block. Includes chef's knife, bread knife, paring knife, and more. Sharp and well-maintained.",
+  "price": 45.00,
+  "category": ["Kitchen"],
+  "link": "https://example.com/contact",
+  "condition": "Good"
+}

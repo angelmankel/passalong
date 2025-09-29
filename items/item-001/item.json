@@ -1,0 +1,9 @@
+{
+  "id": "item-001",
+  "name": "Vintage Coffee Table",
+  "description": "Beautiful wooden coffee table with glass top. Perfect condition, no scratches or damage. Great for living room or office.",
+  "price": 150.00,
+  "category": ["Furniture", "Home Decor"],
+  "link": "https://example.com/contact",
+  "condition": "Good"
+}

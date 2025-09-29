@@ -1,0 +1,9 @@
+{
+  "id": "item-002",
+  "name": "MacBook Pro 13-inch",
+  "description": "2019 MacBook Pro in excellent condition. 8GB RAM, 256GB SSD. Perfect for students or professionals. Includes charger.",
+  "price": 800.00,
+  "category": ["Electronics"],
+  "link": "https://example.com/contact",
+  "condition": "Like New"
+}

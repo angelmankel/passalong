@@ -1,0 +1,56 @@
+I want to make a dead simple react frontend and node.js server that will allow me to post items that I need to sell since im moving. I will be hosting it on my own server on my own domain.
+
+The web app should be a single page that displays the items in a list. each list item should contain the item properties (listed below). The left side of the list item should show the first image if there is an image. I should be able to click on the list item where a modal pops up and displays all the items properties in a meaningful easy to read format along with an image gallery where users can see all images of the item.
+
+### Frontend
+Configuration:
+- server endpoints and other variables should be stored in an .env file so I can easily swap them out when deploying
+- categories, conditions, or anything else that will be an enum-like property should be pulled from a constants file where I can easily go in and add new ones/remove
+
+UI design:
+- should be dark theme first
+- mobile and desktop support
+
+Features:
+- we should include a way for users to favorite items which would just store the item id in an array that gets stored to localstorage
+- we should also include a way to export favorites into a plain text format that can be easily pasted into discord or an email, etc.
+- the items list should have filter options at the top to filter by category, condition, price, favorites, etc.
+- search functionality to search through item names, descriptions, and categories
+
+libraries:
+- zustand for state
+- localforage for storing client side favorites (this would be stored per client, so they can save items they are interested in)
+- mantine for UI components
+- axios for http calls
+
+### Backend
+Libraries:
+- express for rest API
+- 
+
+Project Structure:
+/src
+    /items
+    /constants
+    /api
+    main.js
+
+Data:
+- items should be stored as simple JSON data structures on disk. 
+- we should implement a system that checks the /items folder for child folders and parse the contents in each one, it caches the data so that any subsequent API calls for items checks the cache first to get the data there first if possible.
+- each folder will contain a JSON file represents an item that will show in the UI, and image files in .png/.jpeg/.heic format
+- Each JSON file will include the following properties: id: string, name: string, description: string, price: number/float, category: string[], link/url: string, condition: string (New/Used/Not Working/etc.), images: string[]
+- Upon startup, the backend will loop through any child folders in the /items folder, and parse each JSON into objects in memory. It will also find all image files in the child folder and add the filenames to the JSON.images array.
+
+API:
+- we should have a simple api that exposes a GET /items to get all items 
+- /refresh endpoint to force the server to re-parse JSON files/images
+- we should serve the /items folder as a static folder to allow the frontend to use the filenames to directly get the images like this: https://domain.com/api/images/itemId?123/imagename1.png (or something along those lines)
+
+### Other Notes
+Deployment:
+- the entire project, backend and frontend, should be compiled into a docker image that I can spin up on my existing docker stack.
+- use a linux base image (node:alpine or similar)
+- expose port 3000 for the application
+- the only thing you need to do here is make sure the project is compiled with the correct dependencies and everything needed to create the docker image.
+- I can then upload the image to dockerhub so I can pull it down publicly
