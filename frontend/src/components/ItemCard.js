@@ -28,65 +28,73 @@ function ItemCard({ item }) {
     : null;
 
   return (
-    <Card shadow="sm" padding="lg" radius="md" withBorder style={{ cursor: 'pointer' }} onClick={openModal}>
-      <Card.Section>
-        {firstImage ? (
-          <Image
-            src={firstImage}
-            height={200}
-            alt={item.name}
-            fit="cover"
-            fallbackSrc="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPk5vIEltYWdlPC90ZXh0Pjwvc3ZnPg=="
-          />
-        ) : (
-          <div style={{ height: 200, backgroundColor: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Text color="dimmed">No Image</Text>
-          </div>
-        )}
-      </Card.Section>
+    <Card shadow="sm" padding="md" radius="md" withBorder style={{ cursor: 'pointer' }} onClick={openModal}>
+      <Group align="flex-start" spacing="md" noWrap>
+        {/* Left side - Image */}
+        <div style={{ flexShrink: 0, width: 120, height: 120 }}>
+          {firstImage ? (
+            <Image
+              src={firstImage}
+              width={120}
+              height={120}
+              alt={item.name}
+              fit="cover"
+              radius="md"
+              fallbackSrc="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPk5vIEltYWdlPC90ZXh0Pjwvc3ZnPg=="
+            />
+          ) : (
+            <div style={{ 
+              width: 120, 
+              height: 120, 
+              backgroundColor: '#f0f0f0', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              borderRadius: '8px'
+            }}>
+              <Text color="dimmed" size="sm">No Image</Text>
+            </div>
+          )}
+        </div>
 
-      <Group position="apart" mt="md" mb="xs">
-        <Text weight={500} lineClamp={2}>
-          {item.name}
-        </Text>
-        <ActionIcon
-          variant="subtle"
-          color={isFavorite(item.id) ? 'red' : 'gray'}
-          onClick={handleToggleFavorite}
-        >
-          {isFavorite(item.id) ? <IconHeartFilled size={16} /> : <IconHeart size={16} />}
-        </ActionIcon>
+        {/* Right side - Item information */}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <Group position="apart" mb="xs">
+            <Text weight={500} lineClamp={1} style={{ flex: 1 }}>
+              {item.name}
+            </Text>
+            <ActionIcon
+              variant="subtle"
+              color={isFavorite(item.id) ? 'red' : 'gray'}
+              onClick={handleToggleFavorite}
+              size="sm"
+            >
+              {isFavorite(item.id) ? <IconHeartFilled size={14} /> : <IconHeart size={14} />}
+            </ActionIcon>
+          </Group>
+
+          <Text size="sm" color="dimmed" lineClamp={2} mb="sm">
+            {item.description}
+          </Text>
+
+          <Group position="apart" mb="sm">
+            <Text size="lg" weight={700} color="blue">
+              ${item.price}
+            </Text>
+            <Badge color="green" variant="light" size="sm">
+              {item.condition}
+            </Badge>
+          </Group>
+
+          <Group spacing="xs">
+            {item.category.map((cat) => (
+              <Badge key={cat} size="xs" variant="outline">
+                {cat}
+              </Badge>
+            ))}
+          </Group>
+        </div>
       </Group>
-
-      <Text size="sm" color="dimmed" lineClamp={2} mb="sm">
-        {item.description}
-      </Text>
-
-      <Group position="apart" mb="sm">
-        <Text size="xl" weight={700} color="blue">
-          ${item.price}
-        </Text>
-        <Badge color="green" variant="light">
-          {item.condition}
-        </Badge>
-      </Group>
-
-      <Group spacing="xs" mb="sm">
-        {item.category.map((cat) => (
-          <Badge key={cat} size="sm" variant="outline">
-            {cat}
-          </Badge>
-        ))}
-      </Group>
-
-      <Button
-        fullWidth
-        leftIcon={<IconEye size={16} />}
-        variant="light"
-        onClick={openModal}
-      >
-        View Details
-      </Button>
     </Card>
   );
 }
