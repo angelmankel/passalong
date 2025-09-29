@@ -355,7 +355,7 @@ function ItemCard({ item }) {
     modals.openModal({
       title: item.name,
       children: <ItemModalContent item={item} modals={modals} />,
-      size: 'xl',
+      size: '90%',
       centered: true
     });
   };
