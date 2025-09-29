@@ -646,13 +646,32 @@ function ItemModalContent({ item, modals }) {
       </Group>
 
       {item.images && item.images.length > 0 && (
-        <div>
+        <div style={{ 
+          backgroundColor: '#2a2a2a', 
+          borderRadius: '8px', 
+          padding: '12px',
+          marginBottom: '16px'
+        }}>
           <Carousel
             withIndicators
             height={300}
             slideSize={{ base: '100%', sm: '50%', md: '33.333333%' }}
             slideGap={{ base: 0, sm: 'md' }}
-            emblaOptions={{ loop: true, align: 'start' }}
+            loop
+            align="start"
+            containScroll="trimSnaps"
+            styles={{
+              viewport: {
+                borderRadius: '6px'
+              },
+              container: {
+                borderRadius: '6px',
+                justifyContent: 'flex-start'
+              },
+              indicators: {
+                bottom: '8px'
+              }
+            }}
           >
             {item.images.map((image, index) => {
               const imageUrl = getImageUrl(item.id, image);
@@ -663,7 +682,7 @@ function ItemModalContent({ item, modals }) {
                     alt={`${item.name} - Image ${index + 1}`}
                     height={300}
                     fit="contain"
-                    radius="md"
+                    radius="sm"
                     style={{ cursor: 'pointer' }}
                     onClick={() => modals.openModal({
                       title: '',
