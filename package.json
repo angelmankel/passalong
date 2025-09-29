@@ -1,0 +1,24 @@
+{
+  "name": "yardsale",
+  "version": "1.0.0",
+  "description": "Yard Sale App - React frontend and Node.js backend",
+  "scripts": {
+    "start": "concurrently \"npm run backend\" \"npm run frontend\"",
+    "dev": "concurrently \"npm run backend:dev\" \"npm run frontend:dev\"",
+    "backend": "cd backend && npm start",
+    "backend:dev": "cd backend && npm run dev",
+    "frontend": "cd frontend && npm start",
+    "frontend:dev": "cd frontend && npm start",
+    "build": "cd frontend && npm run build",
+    "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install",
+    "docker:build": "docker build -t yardsale .",
+    "docker:run": "docker run -p 5000:5000 yardsale",
+    "docker:up": "docker-compose up --build"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "keywords": ["yard-sale", "react", "nodejs", "express"],
+  "author": "",
+  "license": "MIT"
+}

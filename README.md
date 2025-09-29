@@ -15,18 +15,20 @@ A simple React frontend and Node.js backend for managing and displaying items fo
 
 ### Development
 
-1. **Backend Setup**:
+1. **Install all dependencies**:
    ```bash
-   cd backend
-   npm install
-   npm start
+   npm run install:all
    ```
 
-2. **Frontend Setup** (in another terminal):
+2. **Start both frontend and backend**:
    ```bash
-   cd frontend
-   npm install
-   npm start
+   npm run dev
+   ```
+   
+   Or start them separately:
+   ```bash
+   npm run backend:dev    # Backend with auto-reload
+   npm run frontend:dev   # Frontend with hot-reload
    ```
 
 3. **Add Items**: Create folders in `/items` directory with `item.json` files
@@ -35,14 +37,26 @@ A simple React frontend and Node.js backend for managing and displaying items fo
 
 1. **Build and run with Docker**:
    ```bash
-   docker-compose up --build
+   npm run docker:up
    ```
 
 2. **Or build Docker image manually**:
    ```bash
-   docker build -t yardsale .
-   docker run -p 3000:3000 yardsale
+   npm run docker:build
+   npm run docker:run
    ```
+
+### Available Scripts
+
+- `npm run dev` - Start both frontend and backend in development mode
+- `npm run start` - Start both frontend and backend in production mode
+- `npm run backend:dev` - Start only backend with auto-reload
+- `npm run frontend:dev` - Start only frontend with hot-reload
+- `npm run install:all` - Install all dependencies for both frontend and backend
+- `npm run build` - Build frontend for production
+- `npm run docker:build` - Build Docker image
+- `npm run docker:run` - Run Docker container
+- `npm run docker:up` - Build and run with docker-compose
 
 ## Adding Items
 
@@ -86,8 +100,8 @@ items/
 
 ## Environment Variables
 
-- `REACT_APP_API_URL` - Backend API URL (default: http://localhost:3000)
-- `PORT` - Server port (default: 3000)
+- `REACT_APP_API_URL` - Backend API URL (default: http://localhost:5000)
+- `PORT` - Server port (default: 5000)
 
 ## Tech Stack
 

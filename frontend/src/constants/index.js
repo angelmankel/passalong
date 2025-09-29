@@ -24,4 +24,9 @@ export const CONDITIONS = [
 ];
 
 // API Configuration
-export const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000';
+export const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+
+// Helper function to get full image URL
+export const getImageUrl = (itemId, imageName) => {
+  return `${API_BASE_URL}/api/images/${itemId}/${imageName}`;
+};

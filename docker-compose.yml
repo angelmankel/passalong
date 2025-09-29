@@ -4,9 +4,9 @@ services:
   yardsale:
     build: .
     ports:
-      - "3000:3000"
+      - "5000:5000"
     volumes:
       - ./items:/app/items
     environment:
       - NODE_ENV=production
-      - PORT=3000
+      - PORT=5000

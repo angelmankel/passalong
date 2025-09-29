@@ -24,7 +24,7 @@ RUN cd frontend && npm run build
 RUN mkdir -p backend/public && cp -r frontend/build/* backend/public/
 
 # Expose port
-EXPOSE 3000
+EXPOSE 5000
 
 # Start the backend server (which will also serve the frontend)
 CMD ["cd", "backend", "&&", "npm", "start"]

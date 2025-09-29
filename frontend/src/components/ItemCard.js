@@ -3,6 +3,7 @@ import { Card, Image, Text, Group, Badge, Button, ActionIcon } from '@mantine/co
 import { IconHeart, IconHeartFilled, IconEye } from '@tabler/icons-react';
 import { useModals } from '@mantine/modals';
 import useStore from '../store/useStore';
+import { getImageUrl } from '../constants';
 
 function ItemCard({ item }) {
   const { toggleFavorite, isFavorite } = useStore();
@@ -23,7 +24,7 @@ function ItemCard({ item }) {
   };
 
   const firstImage = item.images && item.images.length > 0 
-    ? `/api/images/${item.id}/${item.images[0]}` 
+    ? getImageUrl(item.id, item.images[0])
     : null;
 
   return (
@@ -152,16 +153,19 @@ function ItemModalContent({ item }) {
             Images ({item.images.length})
           </Text>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '10px' }}>
-            {item.images.map((image, index) => (
-              <Image
-                key={index}
-                src={`/api/images/${item.id}/${image}`}
-                alt={`${item.name} - Image ${index + 1}`}
-                radius="md"
-                style={{ cursor: 'pointer' }}
-                onClick={() => window.open(`/api/images/${item.id}/${image}`, '_blank')}
-              />
-            ))}
+            {item.images.map((image, index) => {
+              const imageUrl = getImageUrl(item.id, image);
+              return (
+                <Image
+                  key={index}
+                  src={imageUrl}
+                  alt={`${item.name} - Image ${index + 1}`}
+                  radius="md"
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => window.open(imageUrl, '_blank')}
+                />
+              );
+            })}
           </div>
         </div>
       )}

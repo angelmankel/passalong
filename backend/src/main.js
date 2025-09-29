@@ -6,7 +6,7 @@ const { parseItems } = require('./items/itemParser');
 const { getItems, refreshItems } = require('./api/items');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors());
@@ -42,11 +42,12 @@ async function initializeItems() {
 }
 
 // Set items cache for API routes
-app.locals.itemsCache = itemsCache;
 app.locals.ITEMS_DIR = ITEMS_DIR;
 
 // Initialize and start server
 initializeItems().then(() => {
+  // Update the cache after items are loaded
+  app.locals.itemsCache = itemsCache;
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
   });

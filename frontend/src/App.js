@@ -31,6 +31,23 @@ function App() {
     }
   }, [setLoading, setError, setItems]);
 
+  const refreshItems = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      // First call the refresh endpoint to reload items on the server
+      await itemsApi.refresh();
+      // Then fetch the updated items
+      const response = await itemsApi.getAll();
+      setItems(response.data);
+    } catch (err) {
+      setError('Failed to refresh items. Please try again.');
+      console.error('Error refreshing items:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, [setLoading, setError, setItems]);
+
   useEffect(() => {
     loadFavorites();
     fetchItems();
@@ -42,7 +59,7 @@ function App() {
         🏠 Yard Sale
       </Title>
       
-      <Header onRefresh={fetchItems} />
+      <Header onRefresh={refreshItems} />
       <Filters />
       
       {error && (
