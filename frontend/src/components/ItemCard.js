@@ -43,7 +43,12 @@ function FullscreenImageModal({ item, startIndex }) {
         position: 'relative',
         backgroundColor: 'rgba(0, 0, 0, 0.5)'
       }}
-      onClick={closeModal}
+      onClick={(e) => {
+        // Only close if clicking the background div itself, not child elements
+        if (e.target === e.currentTarget) {
+          closeModal();
+        }
+      }}
     >
       {/* Close Button */}
       <button
@@ -69,7 +74,7 @@ function FullscreenImageModal({ item, startIndex }) {
         ×
       </button>
       
-      <div onClick={(e) => e.stopPropagation()}>
+      <div style={{ position: 'relative' }}>
         <ZoomableImage
           src={currentImageUrl}
           alt={`${item.name} - Image ${currentImageIndex + 1}`}
@@ -182,7 +187,7 @@ function ZoomableImage({ src, alt, style, onPrevious, onNext, hasPrevious, hasNe
         height: '100vh',
         overflow: 'hidden',
         position: 'relative',
-        cursor: scale > 1 ? (isDragging ? 'grabbing' : 'grab') : 'zoom-in',
+        cursor: scale > 1 ? (isDragging ? 'grabbing' : 'grab') : 'default',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center'
@@ -195,6 +200,7 @@ function ZoomableImage({ src, alt, style, onPrevious, onNext, hasPrevious, hasNe
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
+      onClick={(e) => e.stopPropagation()}
     >
       <img
         ref={imageRef}
