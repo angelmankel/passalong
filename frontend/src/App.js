@@ -1,9 +1,8 @@
 import React, { useEffect, useCallback } from 'react';
-import { Container, Title, LoadingOverlay } from '@mantine/core';
+import { AppShell, Container, LoadingOverlay } from '@mantine/core';
 import useStore from './store/useStore';
 import { itemsApi } from './services/api';
 import Header from './components/Header';
-import Filters from './components/Filters';
 import ItemList from './components/ItemList';
 import ItemModal from './components/ItemModal';
 
@@ -54,24 +53,26 @@ function App() {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <Container size="xl" py="md">
-      <Title order={1} mb="xl" align="center">
-        🏠 Yard Sale
-      </Title>
-      
+    <AppShell
+      header={{ height: { base: 60, sm: 80 } }}
+      padding="md"
+    >
       <Header onRefresh={refreshItems} />
-      <Filters />
       
-      {error && (
-        <div style={{ color: 'red', textAlign: 'center', margin: '20px 0' }}>
-          {error}
-        </div>
-      )}
-      
-      <LoadingOverlay visible={loading} />
-      <ItemList />
-      <ItemModal />
-    </Container>
+      <AppShell.Main>
+        <Container size="xl">
+          {error && (
+            <div style={{ color: 'red', textAlign: 'center', margin: '20px 0' }}>
+              {error}
+            </div>
+          )}
+          
+          <LoadingOverlay visible={loading} />
+          <ItemList />
+          <ItemModal />
+        </Container>
+      </AppShell.Main>
+    </AppShell>
   );
 }
 
