@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, Image, Text, Group, Badge, Button, ActionIcon } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
-import { IconHeart, IconHeartFilled, IconEye } from '@tabler/icons-react';
+import { IconHeart, IconHeartFilled, IconEye, IconExternalLink } from '@tabler/icons-react';
 import { useModals } from '@mantine/modals';
 import useStore from '../store/useStore';
 import { getImageUrl } from '../constants';
@@ -116,14 +116,28 @@ function ItemModalContent({ item }) {
         <Text size="xl" weight={700}>
           {item.name}
         </Text>
-        <Button
-          leftIcon={isFavorite(item.id) ? <IconHeartFilled size={16} /> : <IconHeart size={16} />}
-          color={isFavorite(item.id) ? 'red' : 'gray'}
-          variant={isFavorite(item.id) ? 'filled' : 'outline'}
-          onClick={handleToggleFavorite}
-        >
-          {isFavorite(item.id) ? 'Favorited' : 'Add to Favorites'}
-        </Button>
+        <Group spacing="sm">
+          {item.link && (
+            <Button
+              component="a"
+              href={item.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              leftIcon={<IconExternalLink size={16} />}
+              variant="outline"
+            >
+              View Link
+            </Button>
+          )}
+          <Button
+            leftIcon={isFavorite(item.id) ? <IconHeartFilled size={16} /> : <IconHeart size={16} />}
+            color={isFavorite(item.id) ? 'red' : 'gray'}
+            variant={isFavorite(item.id) ? 'filled' : 'outline'}
+            onClick={handleToggleFavorite}
+          >
+            {isFavorite(item.id) ? <IconHeartFilled size={16} /> : <IconHeart size={16} />}
+          </Button>
+        </Group>
       </Group>
 
       <Text size="lg" color="blue" weight={600} mb="md">
@@ -144,19 +158,6 @@ function ItemModalContent({ item }) {
           </Badge>
         ))}
       </Group>
-
-      {item.link && (
-        <Button
-          component="a"
-          href={item.link}
-          target="_blank"
-          rel="noopener noreferrer"
-          fullWidth
-          mb="md"
-        >
-          Contact Seller
-        </Button>
-      )}
 
       {item.images && item.images.length > 0 && (
         <div>
