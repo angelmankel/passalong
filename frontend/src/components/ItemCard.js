@@ -565,7 +565,7 @@ function ItemCard({ item }) {
 
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
             <Text weight={900} color="blue" style={{ fontFamily: 'monospace', flexShrink: 0, textShadow: '0 1px 2px rgba(0,0,0,0.1)', fontSize: '28px', lineHeight: '1.2' }}>
-              ${item.price}
+              {item.price === 0 ? 'FREE' : `$${item.price}`}
             </Text>
             <Text size="sm" color="dimmed" lineClamp={2} style={{ flex: 1 }}>
               {item.description}
@@ -616,7 +616,7 @@ function ItemModalContent({ item, modals }) {
       </Group>
 
       <Text weight={900} color="blue" style={{ fontFamily: 'monospace', textShadow: '0 1px 2px rgba(0,0,0,0.1)', fontSize: '28px', lineHeight: '1.2' }} mb="md">
-        ${item.price}
+        {item.price === 0 ? 'FREE' : `$${item.price}`}
       </Text>
 
       <Text mb="md">
