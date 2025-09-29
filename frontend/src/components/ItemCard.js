@@ -1,8 +1,8 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Card, Image, Text, Group, Badge, Button, ActionIcon } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { Carousel } from '@mantine/carousel';
-import { IconHeart, IconHeartFilled, IconEye, IconExternalLink, IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
+import { IconHeart, IconHeartFilled, IconExternalLink } from '@tabler/icons-react';
 import { useModals } from '@mantine/modals';
 import useStore from '../store/useStore';
 import { getImageUrl } from '../constants';
@@ -139,15 +139,15 @@ function ZoomableImage({ src, alt, style, onPrevious, onNext, hasPrevious, hasNe
   };
 
   // Touch events for mobile
-  const handleTouchStart = (e) => {
+  const handleTouchStart = useCallback((e) => {
     e.preventDefault();
     if (scale > 1 && e.touches.length === 1) {
       setIsDragging(true);
       setDragStart({ x: e.touches[0].clientX - position.x, y: e.touches[0].clientY - position.y });
     }
-  };
+  }, [scale, position]);
 
-  const handleTouchMove = (e) => {
+  const handleTouchMove = useCallback((e) => {
     e.preventDefault();
     if (isDragging && scale > 1 && e.touches.length === 1) {
       setPosition({
@@ -155,7 +155,7 @@ function ZoomableImage({ src, alt, style, onPrevious, onNext, hasPrevious, hasNe
         y: e.touches[0].clientY - dragStart.y
       });
     }
-  };
+  }, [isDragging, scale, dragStart]);
 
   const handleTouchEnd = () => {
     setIsDragging(false);
@@ -209,7 +209,7 @@ function ZoomableImage({ src, alt, style, onPrevious, onNext, hasPrevious, hasNe
       container.removeEventListener('touchend', handleTouchEndPassive);
       container.removeEventListener('wheel', handleWheelPassive);
     };
-  }, [scale, isDragging, position, dragStart]);
+  }, [scale, isDragging, position, dragStart, handleTouchMove, handleTouchStart]);
 
   // Keyboard navigation
   useEffect(() => {

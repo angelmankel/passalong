@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback } from 'react';
-import { AppShell, Container, LoadingOverlay } from '@mantine/core';
+import { AppShell, LoadingOverlay } from '@mantine/core';
 import useStore from './store/useStore';
 import { itemsApi } from './services/api';
 import Header from './components/Header';

@@ -11,15 +11,13 @@ import {
   Stack,
   Switch,
   Divider,
-  useMantineTheme
 } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
-import { IconSearch, IconFilter, IconRefresh, IconHeart, IconMenu2 } from '@tabler/icons-react';
+import { IconSearch, IconFilter, IconRefresh, IconHeart } from '@tabler/icons-react';
 import useStore from '../store/useStore';
 import { CATEGORIES, CONDITIONS } from '../constants';
 
 function Header({ onRefresh }) {
-  const theme = useMantineTheme();
   const isMobile = useMediaQuery('(max-width: 968px)');
   const [drawerOpened, setDrawerOpened] = useState(false);
   
