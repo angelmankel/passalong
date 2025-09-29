@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Card, Image, Text, Group, Badge, Button, ActionIcon } from '@mantine/core';
+import { Card, Image, Text, Group, Badge, Button, ActionIcon, Tooltip } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { Carousel } from '@mantine/carousel';
 import { IconHeart, IconHeartFilled, IconExternalLink } from '@tabler/icons-react';
@@ -545,14 +545,16 @@ function ItemCard({ item }) {
                 {item.condition}
               </Badge>
             </Group>
-            <ActionIcon
-              variant="subtle"
-              color={isFavorite(item.id) ? 'red' : 'gray'}
-              onClick={handleToggleFavorite}
-              size="lg"
-            >
-              {isFavorite(item.id) ? <IconHeartFilled size={20} /> : <IconHeart size={20} />}
-            </ActionIcon>
+            <Tooltip label={isFavorite(item.id) ? 'Remove from favorites' : 'Add to favorites'}>
+              <ActionIcon
+                variant="subtle"
+                color={isFavorite(item.id) ? 'red' : 'gray'}
+                onClick={handleToggleFavorite}
+                size="lg"
+              >
+                {isFavorite(item.id) ? <IconHeartFilled size={20} /> : <IconHeart size={20} />}
+              </ActionIcon>
+            </Tooltip>
           </Group>
 
           <div style={{ display: 'flex', gap: '4px', marginBottom: '12px' }}>

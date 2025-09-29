@@ -11,8 +11,10 @@ import {
   Stack,
   Switch,
   Divider,
+  Tooltip,
 } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
+import { notifications } from '@mantine/notifications';
 import { IconSearch, IconFilter, IconRefresh, IconHeart } from '@tabler/icons-react';
 import useStore from '../store/useStore';
 import { CATEGORIES, CONDITIONS } from '../constants';
@@ -40,7 +42,12 @@ function Header({ onRefresh }) {
     const favoriteItems = filteredItems.filter(item => favorites.includes(item.id));
     
     if (favoriteItems.length === 0) {
-      alert('No favorite items to export!');
+      notifications.show({
+        title: 'No favorites',
+        message: 'No favorite items to export!',
+        color: 'orange',
+        autoClose: 3000,
+      });
       return;
     }
 
@@ -51,7 +58,12 @@ function Header({ onRefresh }) {
     const fullText = `My Favorite Items:\n\n${exportText}\n\nContact me for more details!`;
     
     navigator.clipboard.writeText(fullText).then(() => {
-      alert('Favorites copied to clipboard!');
+      notifications.show({
+        title: 'Success',
+        message: 'Favorites formatted and copied to clipboard',
+        color: 'green',
+        autoClose: 2000,
+      });
     }).catch(() => {
       // Fallback for older browsers
       const textArea = document.createElement('textarea');
@@ -133,15 +145,17 @@ function Header({ onRefresh }) {
                 />
               
               <Group spacing="xs">
-                <ActionIcon
-                  variant="subtle"
-                  color={favorites.length > 0 ? 'red' : 'gray'}
-                  onClick={handleExportFavorites}
-                  disabled={favorites.length === 0}
-                  size="lg"
-                >
-                  <IconHeart size={18} />
-                </ActionIcon>
+                <Tooltip label="Copy favorites to clipboard">
+                  <ActionIcon
+                    variant="subtle"
+                    color={favorites.length > 0 ? 'red' : 'gray'}
+                    onClick={handleExportFavorites}
+                    disabled={favorites.length === 0}
+                    size="lg"
+                  >
+                    <IconHeart size={18} />
+                  </ActionIcon>
+                </Tooltip>
                 
                 <ActionIcon
                   variant="subtle"
@@ -151,13 +165,15 @@ function Header({ onRefresh }) {
                   <IconFilter size={18} />
                 </ActionIcon>
                 
-                <ActionIcon
-                  variant="subtle"
-                  onClick={onRefresh}
-                  size="lg"
-                >
-                  <IconRefresh size={18} />
-                </ActionIcon>
+                <Tooltip label="Refresh data">
+                  <ActionIcon
+                    variant="subtle"
+                    onClick={onRefresh}
+                    size="lg"
+                  >
+                    <IconRefresh size={18} />
+                  </ActionIcon>
+                </Tooltip>
               </Group>
             </Group>
             
@@ -248,23 +264,27 @@ function Header({ onRefresh }) {
             Clear
           </Button>
           
-          <ActionIcon
-            variant="subtle"
-            color={favorites.length > 0 ? 'red' : 'gray'}
-            onClick={handleExportFavorites}
-            disabled={favorites.length === 0}
-            size="lg"
-          >
-            <IconHeart size={18} />
-          </ActionIcon>
+          <Tooltip label="Copy favorites to clipboard">
+            <ActionIcon
+              variant="subtle"
+              color={favorites.length > 0 ? 'red' : 'gray'}
+              onClick={handleExportFavorites}
+              disabled={favorites.length === 0}
+              size="lg"
+            >
+              <IconHeart size={18} />
+            </ActionIcon>
+          </Tooltip>
           
-          <ActionIcon
-            variant="subtle"
-            onClick={onRefresh}
-            size="lg"
-          >
-            <IconRefresh size={18} />
-          </ActionIcon>
+          <Tooltip label="Refresh data">
+            <ActionIcon
+              variant="subtle"
+              onClick={onRefresh}
+              size="lg"
+            >
+              <IconRefresh size={18} />
+            </ActionIcon>
+          </Tooltip>
         </Group>
       </Group>
     </AppShell.Header>

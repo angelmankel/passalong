@@ -59,7 +59,7 @@ function App() {
     >
       <Header onRefresh={refreshItems} />
       
-      <AppShell.Main>
+      <AppShell.Main style={{ backgroundColor: '#1a1a1a', minHeight: '100vh' }}>
         {error && (
           <div style={{ color: 'red', textAlign: 'center', margin: '20px 0' }}>
             {error}
