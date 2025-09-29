@@ -344,7 +344,7 @@ function ZoomableImage({ src, alt, style, onPrevious, onNext, hasPrevious, hasNe
        )}
 
        {/* Mobile Navigation buttons - bottom buttons */}
-       {isMobile && (hasPrevious || hasNext) && (
+       {isMobile && (
          <div style={{
            position: 'absolute',
            bottom: '20px',
@@ -355,86 +355,94 @@ function ZoomableImage({ src, alt, style, onPrevious, onNext, hasPrevious, hasNe
            zIndex: 1000,
            pointerEvents: 'auto'
          }}>
-           {hasPrevious && (
-             <button
-               onClick={(e) => {
-                 e.preventDefault();
-                 e.stopPropagation();
+           <button
+             onClick={(e) => {
+               e.preventDefault();
+               e.stopPropagation();
+               if (hasPrevious) {
                  onPrevious();
-               }}
-               onTouchStart={(e) => {
-                 e.preventDefault();
-                 e.stopPropagation();
-               }}
-               onTouchEnd={(e) => {
-                 e.preventDefault();
-                 e.stopPropagation();
+               }
+             }}
+             onTouchStart={(e) => {
+               e.preventDefault();
+               e.stopPropagation();
+             }}
+             onTouchEnd={(e) => {
+               e.preventDefault();
+               e.stopPropagation();
+               if (hasPrevious) {
                  onPrevious();
-               }}
-               style={{
-                 background: 'rgba(0,0,0,0.8)',
-                 color: 'white',
-                 border: 'none',
-                 borderRadius: '25px',
-                 padding: '12px 20px',
-                 cursor: 'pointer',
-                 fontSize: '16px',
-                 fontWeight: 'bold',
-                 display: 'flex',
-                 alignItems: 'center',
-                 justifyContent: 'center',
-                 gap: '5px',
-                 pointerEvents: 'auto',
-                 zIndex: 1001,
-                 position: 'relative',
-                 width: '140px',
-                 height: '50px',
-                 flexShrink: 0
-               }}
-             >
-               ◀ Previous
-             </button>
-           )}
-           {hasNext && (
-             <button
-               onClick={(e) => {
-                 e.preventDefault();
-                 e.stopPropagation();
+               }
+             }}
+             disabled={!hasPrevious}
+             style={{
+               background: hasPrevious ? 'rgba(0,0,0,0.8)' : 'rgba(0,0,0,0.3)',
+               color: hasPrevious ? 'white' : 'rgba(255,255,255,0.5)',
+               border: 'none',
+               borderRadius: '25px',
+               padding: '12px 20px',
+               cursor: hasPrevious ? 'pointer' : 'not-allowed',
+               fontSize: '16px',
+               fontWeight: 'bold',
+               display: 'flex',
+               alignItems: 'center',
+               justifyContent: 'center',
+               gap: '5px',
+               pointerEvents: hasPrevious ? 'auto' : 'none',
+               zIndex: 1001,
+               position: 'relative',
+               width: '140px',
+               height: '50px',
+               flexShrink: 0,
+               opacity: hasPrevious ? 1 : 0.5
+             }}
+           >
+             ◀ Previous
+           </button>
+           <button
+             onClick={(e) => {
+               e.preventDefault();
+               e.stopPropagation();
+               if (hasNext) {
                  onNext();
-               }}
-               onTouchStart={(e) => {
-                 e.preventDefault();
-                 e.stopPropagation();
-               }}
-               onTouchEnd={(e) => {
-                 e.preventDefault();
-                 e.stopPropagation();
+               }
+             }}
+             onTouchStart={(e) => {
+               e.preventDefault();
+               e.stopPropagation();
+             }}
+             onTouchEnd={(e) => {
+               e.preventDefault();
+               e.stopPropagation();
+               if (hasNext) {
                  onNext();
-               }}
-               style={{
-                 background: 'rgba(0,0,0,0.8)',
-                 color: 'white',
-                 border: 'none',
-                 borderRadius: '25px',
-                 padding: '12px 20px',
-                 cursor: 'pointer',
-                 fontSize: '16px',
-                 fontWeight: 'bold',
-                 display: 'flex',
-                 alignItems: 'center',
-                 justifyContent: 'center',
-                 gap: '5px',
-                 pointerEvents: 'auto',
-                 zIndex: 1001,
-                 position: 'relative',
-                 width: '140px',
-                 height: '50px',
-                 flexShrink: 0
-               }}
-             >
-               Next ▶
-             </button>
-           )}
+               }
+             }}
+             disabled={!hasNext}
+             style={{
+               background: hasNext ? 'rgba(0,0,0,0.8)' : 'rgba(0,0,0,0.3)',
+               color: hasNext ? 'white' : 'rgba(255,255,255,0.5)',
+               border: 'none',
+               borderRadius: '25px',
+               padding: '12px 20px',
+               cursor: hasNext ? 'pointer' : 'not-allowed',
+               fontSize: '16px',
+               fontWeight: 'bold',
+               display: 'flex',
+               alignItems: 'center',
+               justifyContent: 'center',
+               gap: '5px',
+               pointerEvents: hasNext ? 'auto' : 'none',
+               zIndex: 1001,
+               position: 'relative',
+               width: '140px',
+               height: '50px',
+               flexShrink: 0,
+               opacity: hasNext ? 1 : 0.5
+             }}
+           >
+             Next ▶
+           </button>
          </div>
        )}
 
