@@ -89,53 +89,6 @@ function FullscreenImageModal({ item, startIndex }) {
         ✕
       </button>
 
-      {/* Mobile Navigation - Bottom buttons */}
-      {isMobile && (
-        <div style={{
-          position: 'absolute',
-          bottom: '20px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          display: 'flex',
-          gap: '10px',
-          zIndex: 1000
-        }}>
-          {currentImageIndex > 0 && (
-            <button
-              onClick={goToPrevious}
-              style={{
-                background: 'rgba(0,0,0,0.7)',
-                color: 'white',
-                border: 'none',
-                borderRadius: '8px',
-                padding: '12px 16px',
-                fontSize: '16px',
-                cursor: 'pointer',
-                touchAction: 'manipulation'
-              }}
-            >
-              ← Previous
-            </button>
-          )}
-          {currentImageIndex < item.images.length - 1 && (
-            <button
-              onClick={goToNext}
-              style={{
-                background: 'rgba(0,0,0,0.7)',
-                color: 'white',
-                border: 'none',
-                borderRadius: '8px',
-                padding: '12px 16px',
-                fontSize: '16px',
-                cursor: 'pointer',
-                touchAction: 'manipulation'
-              }}
-            >
-              Next →
-            </button>
-          )}
-        </div>
-      )}
       
       <div style={{ position: 'relative' }}>
         <ZoomableImage
@@ -196,9 +149,11 @@ function ZoomableImage({ src, alt, style, onPrevious, onNext, hasPrevious, hasNe
     setIsDragging(false);
   };
 
-  // Touch events for mobile with pinch-to-zoom
+  // Touch events for mobile with optimized pinch-to-zoom
   const [lastTouchDistance, setLastTouchDistance] = useState(0);
   const [lastTouchCenter, setLastTouchCenter] = useState({ x: 0, y: 0 });
+  const [isPinching, setIsPinching] = useState(false);
+  const animationFrameRef = useRef(null);
 
   const getTouchDistance = (touches) => {
     const dx = touches[0].clientX - touches[1].clientX;
@@ -225,6 +180,7 @@ function ZoomableImage({ src, alt, style, onPrevious, onNext, hasPrevious, hasNe
       const center = getTouchCenter(e.touches);
       setLastTouchDistance(distance);
       setLastTouchCenter(center);
+      setIsPinching(true);
     }
   }, [scale, position]);
 
@@ -236,36 +192,47 @@ function ZoomableImage({ src, alt, style, onPrevious, onNext, hasPrevious, hasNe
         x: e.touches[0].clientX - dragStart.x,
         y: e.touches[0].clientY - dragStart.y
       });
-    } else if (e.touches.length === 2) {
-      // Two touches - pinch to zoom
-      const distance = getTouchDistance(e.touches);
-      const center = getTouchCenter(e.touches);
-      
-      if (lastTouchDistance > 0) {
-        const scaleChange = distance / lastTouchDistance;
-        const newScale = Math.max(0.5, Math.min(3, scale * scaleChange));
-        
-        // Calculate new position to keep the pinch center in place
-        const scaleRatio = newScale / scale;
-        const centerOffset = {
-          x: center.x - lastTouchCenter.x,
-          y: center.y - lastTouchCenter.y
-        };
-        
-        setScale(newScale);
-        setPosition({
-          x: position.x * scaleRatio + centerOffset.x * (1 - scaleRatio),
-          y: position.y * scaleRatio + centerOffset.y * (1 - scaleRatio)
-        });
+    } else if (e.touches.length === 2 && isPinching) {
+      // Two touches - pinch to zoom (optimized with requestAnimationFrame)
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
       }
       
-      setLastTouchDistance(distance);
-      setLastTouchCenter(center);
+      animationFrameRef.current = requestAnimationFrame(() => {
+        const distance = getTouchDistance(e.touches);
+        const center = getTouchCenter(e.touches);
+        
+        if (lastTouchDistance > 0) {
+          const scaleChange = distance / lastTouchDistance;
+          const newScale = Math.max(0.5, Math.min(3, scale * scaleChange));
+          
+          // Calculate new position to keep the pinch center in place
+          const scaleRatio = newScale / scale;
+          const centerOffset = {
+            x: center.x - lastTouchCenter.x,
+            y: center.y - lastTouchCenter.y
+          };
+          
+          setScale(newScale);
+          setPosition({
+            x: position.x * scaleRatio + centerOffset.x * (1 - scaleRatio),
+            y: position.y * scaleRatio + centerOffset.y * (1 - scaleRatio)
+          });
+        }
+        
+        setLastTouchDistance(distance);
+        setLastTouchCenter(center);
+      });
     }
-  }, [isDragging, scale, dragStart, lastTouchDistance, lastTouchCenter, position]);
+  }, [isDragging, scale, dragStart, lastTouchDistance, lastTouchCenter, position, isPinching]);
 
   const handleTouchEnd = () => {
     setIsDragging(false);
+    setIsPinching(false);
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = null;
+    }
   };
 
   const resetZoom = () => {
@@ -315,6 +282,9 @@ function ZoomableImage({ src, alt, style, onPrevious, onNext, hasPrevious, hasNe
       container.removeEventListener('touchmove', handleTouchMovePassive);
       container.removeEventListener('touchend', handleTouchEndPassive);
       container.removeEventListener('wheel', handleWheelPassive);
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
     };
   }, [scale, isDragging, position, dragStart, handleTouchMove, handleTouchStart]);
 
@@ -358,12 +328,13 @@ function ZoomableImage({ src, alt, style, onPrevious, onNext, hasPrevious, hasNe
           ...style,
           transform: `scale(${scale}) translate(${position.x / scale}px, ${position.y / scale}px)`,
           transformOrigin: 'center center',
-          transition: isDragging ? 'none' : 'transform 0.1s ease-out',
+          transition: (isDragging || isPinching) ? 'none' : 'transform 0.1s ease-out',
           userSelect: 'none',
           pointerEvents: 'none',
           maxWidth: '100%',
           maxHeight: '100%',
-          objectFit: 'contain'
+          objectFit: 'contain',
+          willChange: (isDragging || isPinching) ? 'transform' : 'auto' // Optimize for hardware acceleration
         }}
         draggable={false}
       />
