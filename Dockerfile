@@ -27,4 +27,4 @@ RUN mkdir -p backend/public && cp -r frontend/build/* backend/public/
 EXPOSE 5000
 
 # Start the backend server (which will also serve the frontend)
-CMD ["cd", "backend", "&&", "npm", "start"]
+CMD ["sh", "-c", "cd backend && npm start"]
