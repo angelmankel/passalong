@@ -17,7 +17,9 @@ COPY backend/ ./backend/
 COPY frontend/ ./frontend/
 COPY items/ ./items/
 
-# Build frontend
+# Build frontend with API URL
+ARG REACT_APP_API_URL=https://store.blueoceanswim.com
+ENV REACT_APP_API_URL=$REACT_APP_API_URL
 RUN cd frontend && npm run build
 
 # Copy built frontend to backend public directory

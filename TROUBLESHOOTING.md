@@ -9,23 +9,31 @@
 - Console shows: `localhost:5000/api/items:1 Failed to load resource: net::ERR_CONNECTION_REFUSED`
 - Network tab shows failed requests to localhost:5000
 
-**Solution**: ✅ **FIXED** - Added `REACT_APP_API_URL` environment variable
+**Solution**: ✅ **FIXED** - Set `REACT_APP_API_URL` as build argument
 
-**Root Cause**: Frontend was trying to connect to `localhost:5000` but in Docker, the frontend and backend are in the same container.
+**Root Cause**: React environment variables are baked into the build at **build time**, not runtime. The environment variable needs to be available during the Docker build process.
 
 **Fix Applied**:
+```dockerfile
+# In Dockerfile
+ARG REACT_APP_API_URL=https://store.blueoceanswim.com
+ENV REACT_APP_API_URL=$REACT_APP_API_URL
+RUN cd frontend && npm run build
+```
+
 ```yaml
-environment:
-  - NODE_ENV=production
-  - PORT=5000
-  - REACT_APP_API_URL=http://localhost:5000  # ← This line fixes it
+# In docker-compose.yml
+build: 
+  context: .
+  args:
+    REACT_APP_API_URL: https://store.blueoceanswim.com
 ```
 
 **How It Works**:
-- Frontend uses `process.env.REACT_APP_API_URL || 'http://localhost:5000'`
-- Environment variable overrides the default
-- Both frontend and backend run in same container
-- `localhost:5000` refers to the backend server inside the container
+- **Build time**: React app is built with the correct API URL
+- **Runtime**: Frontend makes API calls to `https://store.blueoceanswim.com/api/items`
+- **Traefik**: Routes API calls to the backend container
+- **Backend**: Responds with data from the container
 
 ---
 

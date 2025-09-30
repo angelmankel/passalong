@@ -4,12 +4,15 @@ networks:
 
 services:
   passalong:
-    build: .
+    build: 
+      context: .
+      args:
+        REACT_APP_API_URL: https://store.blueoceanswim.com
     container_name: passalong
     environment:
       - NODE_ENV=production
       - PORT=5000
-      - REACT_APP_API_URL=http://localhost:5000
+      - REACT_APP_API_URL=https://store.blueoceanswim.com
     volumes:
       - ./items:/app/items
     labels:
