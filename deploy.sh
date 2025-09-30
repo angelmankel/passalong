@@ -22,6 +22,14 @@ fi
 # Create items directory if it doesn't exist
 mkdir -p items
 
+# Stop and remove existing containers if they exist
+echo "🛑 Stopping existing containers..."
+docker-compose down 2>/dev/null || true
+
+# Remove any existing containers with the same name
+echo "🗑️  Removing existing containers..."
+docker rm -f passalong 2>/dev/null || true
+
 # Build and start the application
 echo "📦 Building Docker image..."
 docker-compose build
