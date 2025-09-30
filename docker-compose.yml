@@ -1,12 +1,28 @@
-version: '3.8'
+networks:
+  proxy:
+    external: true
 
 services:
   passalong:
     build: .
-    ports:
-      - "5000:5000"
-    volumes:
-      - ./items:/app/items
+    container_name: passalong
     environment:
       - NODE_ENV=production
       - PORT=5000
+    volumes:
+      - ./items:/app/items
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.passalong.entrypoints=http"
+      - "traefik.http.routers.passalong.rule=Host(`store.blueoceanswim.com`)"
+      - "traefik.http.middlewares.passalong-https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.routers.passalong.middlewares=passalong-https-redirect"
+      - "traefik.http.routers.passalong-secure.entrypoints=https"
+      - "traefik.http.routers.passalong-secure.rule=Host(`store.blueoceanswim.com`)"
+      - "traefik.http.routers.passalong-secure.tls=true"
+      - "traefik.http.routers.passalong-secure.service=passalong"
+      - "traefik.http.services.passalong.loadbalancer.server.port=5000"
+      - "traefik.docker.network=proxy"
+    restart: unless-stopped
+    networks:
+      - proxy

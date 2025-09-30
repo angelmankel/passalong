@@ -35,12 +35,18 @@ sleep 5
 # Check if the application is running
 if docker-compose ps | grep -q "Up"; then
     echo "✅ PassAlong App is running!"
-    echo "🌐 Access it at: http://your-server-ip:5000"
+    echo "🌐 Access it at: https://store.blueoceanswim.com"
+    echo "   (or your configured domain)"
     echo ""
     echo "📋 Useful commands:"
     echo "   View logs: docker-compose logs -f"
     echo "   Stop app: docker-compose down"
     echo "   Restart: docker-compose restart"
+    echo ""
+    echo "🔧 Traefik integration:"
+    echo "   - HTTP redirects to HTTPS automatically"
+    echo "   - SSL certificates managed by Traefik"
+    echo "   - No port exposure needed (Traefik handles routing)"
 else
     echo "❌ Application failed to start. Check logs:"
     docker-compose logs

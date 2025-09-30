@@ -1,6 +1,6 @@
 # 🚀 PassAlong App Deployment Guide
 
-## Quick Start (Linux Server)
+## Quick Start (Linux Server with Traefik)
 
 ### 1. Copy Project to Server
 ```bash
@@ -8,7 +8,14 @@
 scp -r . user@your-server:/path/to/passalong/
 ```
 
-### 2. Build and Run with Docker Compose
+### 2. Update Domain (Optional)
+Edit `docker-compose.yml` and change the domain:
+```yaml
+- "traefik.http.routers.passalong.rule=Host(`store.blueoceanswim.com`)"
+- "traefik.http.routers.passalong-secure.rule=Host(`store.blueoceanswim.com`)"
+```
+
+### 3. Build and Run with Docker Compose
 ```bash
 # Navigate to project directory
 cd /path/to/passalong/
@@ -20,9 +27,9 @@ docker-compose up --build -d
 docker-compose ps
 ```
 
-### 3. Access the Application
-- **URL**: `http://your-server-ip:5000`
-- **Port**: 5000
+### 4. Access the Application
+- **URL**: `https://store.blueoceanswim.com`
+- **HTTP redirects to HTTPS** automatically via Traefik
 
 ---
 
