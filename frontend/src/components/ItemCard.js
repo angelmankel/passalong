@@ -25,7 +25,14 @@ function FullscreenImageModal({ item, startIndex }) {
   };
   
   const closeModal = () => {
-    modals.closeAll();
+    // Close only the topmost modal (the fullscreen one)
+    const modalStack = modals.modals;
+    if (modalStack.length > 1) {
+      // Close only the last modal (fullscreen)
+      modals.closeModal(modalStack[modalStack.length - 1].id);
+    } else {
+      modals.closeAll();
+    }
   };
   
   const currentImageUrl = getImageUrl(item.id, item.images[currentImageIndex]);
@@ -656,6 +663,11 @@ function ItemModalContent({ item, modals }) {
             withIndicators
             height={300}
             slideSize={{ base: '100%', sm: '50%', md: '33.333333%' }}
+            breakpoints={[
+              { maxWidth: 'sm', slideSize: '100%', slideGap: 0 },
+              { maxWidth: 'md', slideSize: '50%', slideGap: 'md' },
+              { slideSize: '33.333333%', slideGap: 'md' }
+            ]}
             slideGap={{ base: 0, sm: 'md' }}
             loop
             align="start"
@@ -666,7 +678,12 @@ function ItemModalContent({ item, modals }) {
               },
               container: {
                 borderRadius: '6px',
-                justifyContent: 'flex-start'
+                display: 'flex',
+                justifyContent: 'flex-start',
+                alignItems: 'flex-start'
+              },
+              slide: {
+                flexShrink: 0
               },
               indicators: {
                 bottom: '8px'
@@ -684,39 +701,41 @@ function ItemModalContent({ item, modals }) {
                     fit="contain"
                     radius="sm"
                     style={{ cursor: 'pointer' }}
-                    onClick={() => modals.openModal({
-                      title: '',
-                      children: <FullscreenImageModal item={item} startIndex={index} />,
-                      size: '100%',
-                      centered: true,
-                      withCloseButton: false,
-                      styles: {
-                        content: { 
-                          height: '100vh', 
-                          maxHeight: '100vh',
-                          width: '100vw',
-                          maxWidth: '100vw',
-                          margin: 0,
-                          padding: 0,
-                          overflow: 'hidden',
-                          position: 'fixed',
-                          top: 0,
-                          left: 0,
-                          right: 0,
-                          bottom: 0
-                        },
-                        body: { 
-                          height: '100vh', 
-                          width: '100vw',
-                          margin: 0,
-                          padding: 0,
-                          overflow: 'hidden'
-                        },
-                        header: {
-                          display: 'none'
+                    onClick={() => {
+                      modals.openModal({
+                        title: '',
+                        children: <FullscreenImageModal item={item} startIndex={index} />,
+                        size: '100%',
+                        centered: true,
+                        withCloseButton: false,
+                        styles: {
+                          content: { 
+                            height: '100vh', 
+                            maxHeight: '100vh',
+                            width: '100vw',
+                            maxWidth: '100vw',
+                            margin: 0,
+                            padding: 0,
+                            overflow: 'hidden',
+                            position: 'fixed',
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0
+                          },
+                          body: { 
+                            height: '100vh', 
+                            width: '100vw',
+                            margin: 0,
+                            padding: 0,
+                            overflow: 'hidden'
+                          },
+                          header: {
+                            display: 'none'
+                          }
                         }
-                      }
-                    })}
+                      });
+                    }}
                   />
                 </Carousel.Slide>
               );
