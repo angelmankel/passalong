@@ -11,7 +11,6 @@ import {
 } from '@mantine/core';
 import { IconSearch, IconFilter } from '@tabler/icons-react';
 import useStore from '../store/useStore';
-import { CATEGORIES, CONDITIONS } from '../constants';
 
 function Filters() {
   const {
@@ -19,6 +18,8 @@ function Filters() {
     selectedCategory,
     selectedCondition,
     showFavoritesOnly,
+    categories,
+    conditions,
     setSearchQuery,
     setSelectedCategory,
     setSelectedCondition,
@@ -55,7 +56,7 @@ function Filters() {
             onChange={setSelectedCategory}
             data={[
               { value: '', label: 'All Categories' },
-              ...CATEGORIES.map(cat => ({ value: cat, label: cat }))
+              ...categories.map(cat => ({ value: cat, label: cat }))
             ]}
             clearable
           />
@@ -68,7 +69,7 @@ function Filters() {
             onChange={setSelectedCondition}
             data={[
               { value: '', label: 'All Conditions' },
-              ...CONDITIONS.map(cond => ({ value: cond, label: cond }))
+              ...conditions.map(cond => ({ value: cond, label: cond }))
             ]}
             clearable
           />

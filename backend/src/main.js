@@ -4,6 +4,7 @@ const path = require('path');
 const fs = require('fs-extra');
 const { parseItems } = require('./items/itemParser');
 const { getItems, refreshItems } = require('./api/items');
+const { getConfig } = require('./api/config');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -21,6 +22,7 @@ app.use(express.static(path.join(__dirname, '../public')));
 // API Routes
 app.get('/api/items', getItems);
 app.post('/api/refresh', refreshItems);
+app.get('/api/config', getConfig);
 
 // Serve React app for all other routes
 app.get('*', (req, res) => {

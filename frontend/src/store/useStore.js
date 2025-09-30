@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import localforage from 'localforage';
+import { API_BASE_URL, DEFAULT_CATEGORIES, DEFAULT_CONDITIONS } from '../constants';
 
 // Initialize localforage
 localforage.config({
@@ -16,6 +17,11 @@ const useStore = create((set, get) => ({
   // Favorites state
   favorites: [],
   
+  // Configuration state
+  categories: DEFAULT_CATEGORIES,
+  conditions: DEFAULT_CONDITIONS,
+  configLoading: false,
+  
   // Filter state
   searchQuery: '',
   selectedCategory: '',
@@ -26,6 +32,28 @@ const useStore = create((set, get) => ({
   setItems: (items) => set({ items }),
   setLoading: (loading) => set({ loading }),
   setError: (error) => set({ error }),
+  
+  // Configuration actions
+  loadConfig: async () => {
+    try {
+      set({ configLoading: true });
+      const response = await fetch(`${API_BASE_URL}/api/config`);
+      if (response.ok) {
+        const config = await response.json();
+        set({ 
+          categories: config.categories || DEFAULT_CATEGORIES,
+          conditions: config.conditions || DEFAULT_CONDITIONS,
+          configLoading: false 
+        });
+      } else {
+        console.warn('Failed to load config, using defaults');
+        set({ configLoading: false });
+      }
+    } catch (error) {
+      console.error('Error loading config:', error);
+      set({ configLoading: false });
+    }
+  },
   
   // Favorites actions
   loadFavorites: async () => {

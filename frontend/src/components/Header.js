@@ -19,7 +19,6 @@ import { useMediaQuery } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { IconSearch, IconFilter, IconRefresh, IconHeart, IconTrash } from '@tabler/icons-react';
 import useStore from '../store/useStore';
-import { CATEGORIES, CONDITIONS } from '../constants';
 
 function Header({ onRefresh }) {
   const isMobile = useMediaQuery('(max-width: 968px)');
@@ -33,6 +32,8 @@ function Header({ onRefresh }) {
     selectedCondition,
     showFavoritesOnly,
     favorites,
+    categories,
+    conditions,
     setSearchQuery,
     setSelectedCategory,
     setSelectedCondition,
@@ -131,7 +132,7 @@ function Header({ onRefresh }) {
         onChange={setSelectedCategory}
         data={[
           { value: '', label: 'All Categories' },
-          ...CATEGORIES.map(cat => ({ value: cat, label: cat }))
+          ...categories.map(cat => ({ value: cat, label: cat }))
         ]}
         clearable
         size="md"
@@ -146,7 +147,7 @@ function Header({ onRefresh }) {
         onChange={setSelectedCondition}
         data={[
           { value: '', label: 'All Conditions' },
-          ...CONDITIONS.map(cond => ({ value: cond, label: cond }))
+          ...conditions.map(cond => ({ value: cond, label: cond }))
         ]}
         clearable
         size="md"
@@ -299,7 +300,7 @@ function Header({ onRefresh }) {
             onChange={setSelectedCategory}
             data={[
               { value: '', label: 'All Categories' },
-              ...CATEGORIES.map(cat => ({ value: cat, label: cat }))
+              ...categories.map(cat => ({ value: cat, label: cat }))
             ]}
             clearable
             style={{ minWidth: 120 }}
@@ -312,7 +313,7 @@ function Header({ onRefresh }) {
             onChange={setSelectedCondition}
             data={[
               { value: '', label: 'All Conditions' },
-              ...CONDITIONS.map(cond => ({ value: cond, label: cond }))
+              ...conditions.map(cond => ({ value: cond, label: cond }))
             ]}
             clearable
             style={{ minWidth: 120 }}

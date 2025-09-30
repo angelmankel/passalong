@@ -1,20 +1,16 @@
-// Categories for items
-export const CATEGORIES = [
-  'Electronics',
-  'Furniture',
-  'Clothing',
-  'Books',
-  'Kitchen',
-  'Tools',
-  'Sports',
-  'Toys',
-  'Home Decor',
-  'Automotive',
-  'Other'
+// Categories and conditions will be loaded dynamically from the API
+// These are fallback values in case the API is not available
+export const DEFAULT_CATEGORIES = [
+  'Cables',
+  'Computer Cases',
+  'Computer Parts',
+  'Graphics Card',
+  'Networking',
+  'Other',
+  'Server'
 ];
 
-// Item conditions
-export const CONDITIONS = [
+export const DEFAULT_CONDITIONS = [
   'New',
   'Like New',
   'Good',

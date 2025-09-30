@@ -13,7 +13,8 @@ function App() {
     setItems, 
     setLoading, 
     setError,
-    loadFavorites 
+    loadFavorites,
+    loadConfig
   } = useStore();
 
   const fetchItems = useCallback(async () => {
@@ -49,6 +50,7 @@ function App() {
 
   useEffect(() => {
     loadFavorites();
+    loadConfig();
     fetchItems();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
