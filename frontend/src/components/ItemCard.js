@@ -11,6 +11,7 @@ import { getImageUrl } from '../constants';
 function FullscreenImageModal({ item, startIndex }) {
   const [currentImageIndex, setCurrentImageIndex] = useState(startIndex);
   const modals = useModals();
+  const isMobile = useMediaQuery('(max-width: 968px)');
   
   const goToPrevious = () => {
     if (currentImageIndex > 0) {
@@ -40,7 +41,7 @@ function FullscreenImageModal({ item, startIndex }) {
   return (
     <div 
       style={{ 
-        height: '100vh', 
+        height: '100dvh', // Use dynamic viewport height for iOS Safari
         width: '100vw',
         display: 'flex',
         alignItems: 'center',
@@ -48,7 +49,8 @@ function FullscreenImageModal({ item, startIndex }) {
         margin: 0,
         padding: 0,
         position: 'relative',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)'
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        overflow: 'hidden'
       }}
       onClick={(e) => {
         // Only close if clicking the background div itself, not child elements
@@ -62,29 +64,78 @@ function FullscreenImageModal({ item, startIndex }) {
         onClick={closeModal}
         style={{
           position: 'absolute',
-          top: '20px',
-          right: '20px',
+          top: isMobile ? '10px' : '20px',
+          right: isMobile ? '10px' : '20px',
           zIndex: 1000,
           background: 'rgba(0,0,0,0.7)',
           color: 'white',
           border: 'none',
           borderRadius: '50%',
-          width: '40px',
-          height: '40px',
+          width: isMobile ? '44px' : '40px',
+          height: isMobile ? '44px' : '40px',
           cursor: 'pointer',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          fontSize: '20px',
+          fontSize: isMobile ? '24px' : '20px',
           lineHeight: '40px',
           fontWeight: 'normal',
           padding: '0',
           margin: '0',
-          textAlign: 'center'
+          textAlign: 'center',
+          touchAction: 'manipulation' // Prevent double-tap zoom on mobile
         }}
       >
         ✕
       </button>
+
+      {/* Mobile Navigation - Bottom buttons */}
+      {isMobile && (
+        <div style={{
+          position: 'absolute',
+          bottom: '20px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          display: 'flex',
+          gap: '10px',
+          zIndex: 1000
+        }}>
+          {currentImageIndex > 0 && (
+            <button
+              onClick={goToPrevious}
+              style={{
+                background: 'rgba(0,0,0,0.7)',
+                color: 'white',
+                border: 'none',
+                borderRadius: '8px',
+                padding: '12px 16px',
+                fontSize: '16px',
+                cursor: 'pointer',
+                touchAction: 'manipulation'
+              }}
+            >
+              ← Previous
+            </button>
+          )}
+          {currentImageIndex < item.images.length - 1 && (
+            <button
+              onClick={goToNext}
+              style={{
+                background: 'rgba(0,0,0,0.7)',
+                color: 'white',
+                border: 'none',
+                borderRadius: '8px',
+                padding: '12px 16px',
+                fontSize: '16px',
+                cursor: 'pointer',
+                touchAction: 'manipulation'
+              }}
+            >
+              Next →
+            </button>
+          )}
+        </div>
+      )}
       
       <div style={{ position: 'relative' }}>
         <ZoomableImage
@@ -145,24 +196,73 @@ function ZoomableImage({ src, alt, style, onPrevious, onNext, hasPrevious, hasNe
     setIsDragging(false);
   };
 
-  // Touch events for mobile
+  // Touch events for mobile with pinch-to-zoom
+  const [lastTouchDistance, setLastTouchDistance] = useState(0);
+  const [lastTouchCenter, setLastTouchCenter] = useState({ x: 0, y: 0 });
+
+  const getTouchDistance = (touches) => {
+    const dx = touches[0].clientX - touches[1].clientX;
+    const dy = touches[0].clientY - touches[1].clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+  };
+
+  const getTouchCenter = (touches) => {
+    return {
+      x: (touches[0].clientX + touches[1].clientX) / 2,
+      y: (touches[0].clientY + touches[1].clientY) / 2
+    };
+  };
+
   const handleTouchStart = useCallback((e) => {
     e.preventDefault();
-    if (scale > 1 && e.touches.length === 1) {
+    if (e.touches.length === 1 && scale > 1) {
+      // Single touch - dragging
       setIsDragging(true);
       setDragStart({ x: e.touches[0].clientX - position.x, y: e.touches[0].clientY - position.y });
+    } else if (e.touches.length === 2) {
+      // Two touches - pinch to zoom
+      const distance = getTouchDistance(e.touches);
+      const center = getTouchCenter(e.touches);
+      setLastTouchDistance(distance);
+      setLastTouchCenter(center);
     }
   }, [scale, position]);
 
   const handleTouchMove = useCallback((e) => {
     e.preventDefault();
-    if (isDragging && scale > 1 && e.touches.length === 1) {
+    if (e.touches.length === 1 && isDragging && scale > 1) {
+      // Single touch - dragging
       setPosition({
         x: e.touches[0].clientX - dragStart.x,
         y: e.touches[0].clientY - dragStart.y
       });
+    } else if (e.touches.length === 2) {
+      // Two touches - pinch to zoom
+      const distance = getTouchDistance(e.touches);
+      const center = getTouchCenter(e.touches);
+      
+      if (lastTouchDistance > 0) {
+        const scaleChange = distance / lastTouchDistance;
+        const newScale = Math.max(0.5, Math.min(3, scale * scaleChange));
+        
+        // Calculate new position to keep the pinch center in place
+        const scaleRatio = newScale / scale;
+        const centerOffset = {
+          x: center.x - lastTouchCenter.x,
+          y: center.y - lastTouchCenter.y
+        };
+        
+        setScale(newScale);
+        setPosition({
+          x: position.x * scaleRatio + centerOffset.x * (1 - scaleRatio),
+          y: position.y * scaleRatio + centerOffset.y * (1 - scaleRatio)
+        });
+      }
+      
+      setLastTouchDistance(distance);
+      setLastTouchCenter(center);
     }
-  }, [isDragging, scale, dragStart]);
+  }, [isDragging, scale, dragStart, lastTouchDistance, lastTouchCenter, position]);
 
   const handleTouchEnd = () => {
     setIsDragging(false);
@@ -236,7 +336,7 @@ function ZoomableImage({ src, alt, style, onPrevious, onNext, hasPrevious, hasNe
     <div
       style={{
         width: '100vw',
-        height: '100vh',
+        height: '100dvh', // Use dynamic viewport height for iOS Safari
         overflow: 'hidden',
         position: 'relative',
         cursor: scale > 1 ? (isDragging ? 'grabbing' : 'grab') : 'default',
@@ -710,8 +810,8 @@ function ItemModalContent({ item, modals }) {
                         withCloseButton: false,
                         styles: {
                           content: { 
-                            height: '100vh', 
-                            maxHeight: '100vh',
+                            height: '100dvh', // Use dynamic viewport height for iOS Safari
+                            maxHeight: '100dvh',
                             width: '100vw',
                             maxWidth: '100vw',
                             margin: 0,
@@ -724,7 +824,7 @@ function ItemModalContent({ item, modals }) {
                             bottom: 0
                           },
                           body: { 
-                            height: '100vh', 
+                            height: '100dvh', // Use dynamic viewport height for iOS Safari
                             width: '100vw',
                             margin: 0,
                             padding: 0,
