@@ -526,7 +526,20 @@ function ZoomableImage({ src, alt, style, onPrevious, onNext, hasPrevious, hasNe
 
       {scale > 1 && (
         <button
-          onClick={resetZoom}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            resetZoom();
+          }}
+          onTouchStart={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+          }}
+          onTouchEnd={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            resetZoom();
+          }}
           style={{
             position: 'absolute',
             top: '10px',
@@ -536,12 +549,17 @@ function ZoomableImage({ src, alt, style, onPrevious, onNext, hasPrevious, hasNe
             color: 'white',
             border: 'none',
             borderRadius: '4px',
-            padding: '8px 12px',
+            padding: isMobile ? '12px 16px' : '8px 12px',
             cursor: 'pointer',
-            fontSize: '14px',
+            fontSize: isMobile ? '16px' : '14px',
             zIndex: 10,
             transition: 'all 0.2s ease',
-            opacity: '0.5'
+            opacity: '0.5',
+            touchAction: 'manipulation', // Prevent double-tap zoom on mobile
+            minHeight: isMobile ? '44px' : 'auto', // Minimum touch target for mobile
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
           }}
           onMouseEnter={(e) => {
             e.target.style.opacity = '1.0';
