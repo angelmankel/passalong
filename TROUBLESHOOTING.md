@@ -2,6 +2,33 @@
 
 ## Common Docker Issues & Solutions
 
+### Issue: Frontend Can't Connect to Backend API
+**Problem**: Frontend shows "Failed to load resource: net::ERR_CONNECTION_REFUSED" when trying to access API
+**Symptoms**: 
+- App loads but no items display
+- Console shows: `localhost:5000/api/items:1 Failed to load resource: net::ERR_CONNECTION_REFUSED`
+- Network tab shows failed requests to localhost:5000
+
+**Solution**: ✅ **FIXED** - Added `REACT_APP_API_URL` environment variable
+
+**Root Cause**: Frontend was trying to connect to `localhost:5000` but in Docker, the frontend and backend are in the same container.
+
+**Fix Applied**:
+```yaml
+environment:
+  - NODE_ENV=production
+  - PORT=5000
+  - REACT_APP_API_URL=http://localhost:5000  # ← This line fixes it
+```
+
+**How It Works**:
+- Frontend uses `process.env.REACT_APP_API_URL || 'http://localhost:5000'`
+- Environment variable overrides the default
+- Both frontend and backend run in same container
+- `localhost:5000` refers to the backend server inside the container
+
+---
+
 ### Issue: `cd: not found` Error
 **Problem**: Docker container fails with "cd: not found" error
 **Solution**: ✅ **FIXED** - Updated Dockerfile CMD to use proper shell syntax

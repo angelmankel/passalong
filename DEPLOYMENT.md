@@ -30,6 +30,7 @@ docker-compose ps
 ### 4. Access the Application
 - **URL**: `https://store.blueoceanswim.com`
 - **HTTP redirects to HTTPS** automatically via Traefik
+- **API calls** are configured to use `http://localhost:5000` (internal container network)
 
 ---
 

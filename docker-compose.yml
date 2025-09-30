@@ -9,6 +9,7 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=5000
+      - REACT_APP_API_URL=http://localhost:5000
     volumes:
       - ./items:/app/items
     labels:
